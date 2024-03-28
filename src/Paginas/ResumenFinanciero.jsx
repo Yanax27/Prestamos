@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { getDoc, doc } from 'firebase/firestore';
 import { db } from '../data/FIreBase';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
@@ -6,11 +6,13 @@ import 'react-circular-progressbar/dist/styles.css';
 import { FiDollarSign, FiTrendingUp, FiTrendingDown } from 'react-icons/fi';
 import '../styles/ResumenFinanciero.css';
 import { Spinner } from '../components/Spinner';
+import { DataContext } from '../context/Provider';
 
 const ResumenFinanciero = () => {
   const [cuentaData, setCuentaData] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const { authUser , setDataAuth} = useContext(DataContext);
+  console.log("object");
   useEffect(() => {
     const fetchCuentaData = async () => {
       try {
