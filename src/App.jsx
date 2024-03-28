@@ -1,5 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
 import Navbar from "./Paginas/Navbar";
 import Clientes from "./components/Clientes";
 import AddDatos from "./components/AddDatos";
@@ -14,6 +20,7 @@ import IngresoEgreso from "./Paginas/IngresoEgreso";
 import { Toaster } from "react-hot-toast";
 import { DataContext } from "./context/Provider";
 import config from "./config";
+import { Dashboard } from "./layouts/Dashboard";
 
 function App() {
   const {
@@ -29,7 +36,7 @@ function App() {
   const [navVisible, showNavbar] = useState(false);
   const hideNavbar = () => {
     showNavbar(false);
-  }; 
+  };
   const handleLogin = () => {
     setIsLoggedIn(true);
   };
@@ -49,48 +56,44 @@ function App() {
     if (auth && validate) {
       return children;
     }
-    if (!auth && !validate) return <Navigate to={"/"}></Navigate>;
+    const response = localStorage.getItem(config.localStorage);
+    if (!response) return <Navigate to={"/"}></Navigate>;
   };
-  const validateSession = async () => {
-    const response = await localStorage.getItem(config.localStorage);
-    if (response) {
-      // console.log(response);
-      const dataConvert = JSON.parse(response);
-      setDataAuth(dataConvert);
-      setIsLoggedIn(true);
-      setValidToken(true)
-    }
-  };
-  useEffect(() => {
-    validateSession();
-  },[]);
+
+  const isDashboardRoute = location.pathname === "/dashboard";
   return (
     <>
-      <div className="flex justify-center items-center h-screen">
-        <Routes>
-          <Route
-            path={"/"}
-            element={
-              <ValidateRedir
-                auth={authUser.user}
-                validate={validToken}
-                redirecTo="/dashboard"
-              >
-                <Login></Login>
-              </ValidateRedir>
-            }
-          ></Route>
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute auth={isLoggedIn} validate={validToken}>
-                <ResumenFinanciero />
-              </ProtectedRoute>
-            }
-          ></Route>
-        </Routes>
-        <Toaster position="top-center" reverseOrder={false} />
-      </div>
+      {isDashboardRoute ? <Navbar></Navbar> : null}
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <ValidateRedir
+              auth={authUser.user}
+              validate={validToken}
+              redirecTo="/dashboard"
+            >
+              <Login />
+            </ValidateRedir>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute auth={isLoggedIn} validate={validToken}>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        >
+          <Route path="ingresos/egresos" element={<IngresoEgreso />} />
+          <Route path="clientes" element={<Clientes />} />
+          <Route path="añadir/datos/:clienteId" element={<AddDatos />} />
+          <Route path="detalle/cliente/:clienteId" element={<DetalleCliente />}/>
+          <Route path="detalle/cuenta/:cuentaId" element={<DetalleCuenta />} />
+          <Route path="perfil" element={<Perfil />} />
+          <Route path="cuentas" element={<Cuentas />} />
+        </Route>
+      </Routes>
     </>
   );
 }
@@ -114,15 +117,7 @@ export default App;
                   <ResumenFinanciero />
                 </div>
               }
-            />
-            <Route
-              path="/ingresosEgresos"
-              element={
-                <div className={!navVisible ? "page" : "page page-with-navbar"}>
-                  <IngresoEgreso />
-                </div>
-              }
-            />
+            /> 
             <Route
               path="/Clientes"
               element={

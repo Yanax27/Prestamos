@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { FaUser, FaMoneyBillAlt, FaArrowLeft } from "react-icons/fa";
 import { collection, doc, getDoc } from "firebase/firestore";
 import { db } from "../data/FIreBase";
@@ -8,6 +8,11 @@ import { Spinner } from "./Spinner";
 import Cuentas from "./Cuentas";
 
 const DetalleCliente = () => {
+  const navigate = useNavigate();
+
+  const handleVolver = () => {
+    navigate(-1); // Navega hacia atrás en el historial del navegador
+  };
   const { clienteId } = useParams();
   const [clienteData, setClienteData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -42,10 +47,10 @@ const DetalleCliente = () => {
   return (
     <div className="contenedor">
       <div className="botones">
-        <NavLink className="boton" to="/Clientes">
+        <button className="boton" onClick={handleVolver}>
           <FaArrowLeft size={20} />
           <span>Volver</span>
-        </NavLink>
+        </button>
         <button
           className={`boton ${mostrarCliente ? "activo" : ""}`}
           onClick={() => setMostrarCliente(true)}
@@ -68,12 +73,14 @@ const DetalleCliente = () => {
         </div>
         {mostrarCliente ? (
           <>
-            <h1>{clienteData.Nombres} {clienteData.Apellidos}</h1>
-            <p>CI:        {clienteData.CI}</p>
+            <h1>
+              {clienteData.Nombres} {clienteData.Apellidos}
+            </h1>
+            <p>CI: {clienteData.CI}</p>
             <p>Dirección: {clienteData.Direccion}</p>
-            <p>Teléfono:  {clienteData.Telefono}</p>
+            <p>Teléfono: {clienteData.Telefono}</p>
             <p>Negocio: {clienteData.Negocio}</p>
-            <p>Estado:    {clienteData.Estado}</p>
+            <p>Estado: {clienteData.Estado}</p>
           </>
         ) : (
           <Cuentas clienteId={clienteId} />

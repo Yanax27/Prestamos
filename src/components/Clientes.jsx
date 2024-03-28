@@ -54,78 +54,82 @@ const Clientes = () => {
 
   return (
     <main className="table" id="customers_table">
-    <section className="table__header">
-      <h1>Clientes</h1>
-      <button className="add">
-        <NavLink to={"/AddDatos/newClient"} className="navlink-button">
-          <FaPlus /> Nuevo Cliente
-        </NavLink>
-      </button>
-
-      
-    </section>
-    <section className="table__header">
-    <div className="input-group">
-        <input
-          type="search"
-          placeholder="Buscar..."
-          value={searchTerm}
-          onChange={handleSearch}
-        />
-        <FaSearch className="search-icon" />
-      </div>
-    </section>
-    {loading ? (
-      <div className="spinner-container">
-        <Spinner />
-      </div>
-    ) : (
-      <section className="table__body">
-        <table>
-          <thead>
-            <tr>
-              <th> Nombres </th>
-              <th> Apellidos </th>
-              <th> Acciones </th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredDatos.map((cliente) => (
-              <tr key={cliente.id}>
-                <td>
-                  <NavLink to={"/DetalleCliente/" + cliente.id} className="navlink-item">
-                    {cliente.Nombres}
-                  </NavLink>
-                </td>
-                <td>
-                  <NavLink to={"/DetalleCliente/" + cliente.id} className="navlink-item">
-                    {cliente.Apellidos}
-                  </NavLink>
-                </td>
-                <td>
-                  <button className="edit">
-                    <NavLink
-                      to={"/AddDatos/" + cliente.id}
-                      className="navlink-button"
-                    >
-                      <FaEdit />
-                    </NavLink>
-                  </button>
-                  <button
-                    className="delete"
-                    onClick={() => Delete(cliente.id, cliente.Nombres)}
-                  >
-                    <FaTrash />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <section className="table__header">
+        <h1>Clientes</h1>
+        <button className="add">
+          <NavLink to={"/AddDatos/newClient"} className="navlink-button">
+            <FaPlus /> Nuevo Cliente
+          </NavLink>
+        </button>
       </section>
-    )}
-  </main>
-);
+      <section className="table__header">
+        <div className="input-group">
+          <input
+            type="search"
+            placeholder="Buscar..."
+            value={searchTerm}
+            onChange={handleSearch}
+          />
+          <FaSearch className="search-icon" />
+        </div>
+      </section>
+      {loading ? (
+        <div className="spinner-container">
+          <Spinner />
+        </div>
+      ) : (
+        <section className="table__body">
+          <table>
+            <thead>
+              <tr>
+                <th> Nombres </th>
+                <th> Apellidos </th>
+                <th> Acciones </th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredDatos.map((cliente) => (
+                <tr key={cliente.id}>
+                  <td>
+                    <NavLink
+                      to={"/dashboard/detalle/cliente/" + cliente.id}
+                      className="navlink-item"
+                    >
+                      {cliente.Nombres}
+                    </NavLink>
+                  </td>
+                  <td>
+                    <NavLink
+                      to={"/dashboard/detalle/cliente/" + cliente.id}
+                      className="navlink-item"
+                    >
+                      {cliente.Apellidos}
+                    </NavLink>
+                  </td>
+                  <td>
+                    <button className="edit">
+                      <NavLink
+                        to={"/dashboard/añadir/datos/" + cliente.id}
+                        className="navlink-button"
+                      >
+                        <FaEdit />
+                      </NavLink>
+                    </button>
+                    <button
+                      className="delete"
+                      onClick={() => Delete(cliente.id, cliente.Nombres)}
+                    >
+                      <FaTrash />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+      )}
+    </main>
+  );
 };
 
 export default Clientes;

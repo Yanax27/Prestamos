@@ -1,4 +1,5 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
+import config from "../config";
 
 export const DataContext = createContext();
 
@@ -20,6 +21,15 @@ export const DataContextProvider = ({ children }) => {
       user: data,
     });
   };
+  const evaluateAuth = async () =>{ 
+    const response = await localStorage.getItem(config.localStorage);
+    if(response){
+      const dataConvert = JSON.parse(response);
+      setDataAuth(dataConvert);
+      setIsLoggedIn(true);
+      setValidToken(true);
+    }
+  };
   const STATES_MODIFIC = {
     //exportaciones
     authUser, //exportamos elestado
@@ -29,6 +39,9 @@ export const DataContextProvider = ({ children }) => {
     validToken,
     setValidToken,
   };
+  useEffect(()=>{
+    evaluateAuth();
+  },[])
   return (
     <DataContext.Provider value={STATES_MODIFIC}>
       {children}
