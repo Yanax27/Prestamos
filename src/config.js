@@ -1,8 +1,8 @@
 // config.js
 
 const config = {
-    cuentaFinalId: "yIIKrEjqotEpdqwAK2Bv",
-  };
-  
-  export default config;
-  
+  cuentaFinalId: "yIIKrEjqotEpdqwAK2Bv",
+  localStorage: "saveUserLocalStorage"
+};
+
+export default config;

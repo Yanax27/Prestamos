@@ -10,7 +10,7 @@ background: url(../src/img/fondo1.svg) center / cover;*/
 
 .page{
   min-height: 100vh;
-  background: url(../src/img/fondo1.svg) center / cover;
+  /* background: url(../src/img/fondo1.svg) center / cover; */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -20,7 +20,7 @@ background: url(../src/img/fondo1.svg) center / cover;*/
 	margin-left: 25%;
 }
 .login-container {
-	background: url(../src/img/fondoLogin.svg) center / cover;
+	/* background: url(../src/img/fondoLogin.svg) center / cover; */
     display: flex;
     justify-content: center;
     align-items: center;
