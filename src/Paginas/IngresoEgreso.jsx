@@ -10,6 +10,7 @@ import '../styles/IngresoEgreso.css';
 import { Spinner } from '../components/Spinner';
 
 const IngresoEgreso = () => {
+    console.log("ingreso");
     const [ingresos, setIngresos] = useState([]);
     const [egresos, setEgresos] = useState([]);
     const [nuevoIngreso, setNuevoIngreso] = useState({ concepto: '', monto: '', fecha: new Date() });

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   FaAngleRight,
   FaAngleLeft,
@@ -13,11 +13,18 @@ import "../styles/Navbar.css";
 
 const ICON_SIZE = 20;
 
-function Navbar({ visible, show, hideNavbar }) {
+function Navbar() {
+  const [ visible,setNavVisible] = useState(false);
+  const [show, setNavShow] = useState(false);
+  const [hideNavbar, setHideNavbar] = useState(false);
+ 
   return (
     <>
       <div className="mobile-nav">
-        <button className="mobile-nav-btn" onClick={() => show(!visible)}>
+        <button
+          className="mobile-nav-btn"
+          onClick={() => setNavVisible(!visible)}
+        >
           <FaBars size={24} />
         </button>
       </div>
@@ -25,7 +32,7 @@ function Navbar({ visible, show, hideNavbar }) {
         <button
           type="button"
           className="nav-btn"
-          onClick={() => show(!visible)}
+          onClick={() => setNavVisible(!visible)}
         >
           {!visible ? <FaAngleRight size={30} /> : <FaAngleLeft size={30} />}
         </button>
@@ -38,11 +45,11 @@ function Navbar({ visible, show, hideNavbar }) {
               <FaThLarge size={ICON_SIZE} />
               <span>Finanzas</span>
             </NavLink>
-            <NavLink to="/clientes" className="nav-link">
+            <NavLink to="/dashboard/clientes" className="nav-link">
               <FaUsers size={ICON_SIZE} />
               <span>Clientes</span>
             </NavLink>
-            <NavLink to="/ingresosEgresos" className="nav-link">
+            <NavLink to="/dashboard/ingresos/egresos" className="nav-link">
               <FaChartBar size={ICON_SIZE} />
               <span>Ingreso/Egreso </span>
             </NavLink>
@@ -50,7 +57,7 @@ function Navbar({ visible, show, hideNavbar }) {
         </div>
 
         <div className="links nav-botom">
-          <NavLink to="/perfil" className="nav-link">
+          <NavLink to="/dashboard/perfil" className="nav-link">
             <FaUser size={ICON_SIZE} />
             <span>Mi Perfil</span>
           </NavLink>
