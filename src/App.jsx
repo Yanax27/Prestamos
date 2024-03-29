@@ -6,7 +6,7 @@ import {
   Navigate,
   useLocation,
 } from "react-router-dom";
-import Navbar from "./Paginas/Navbar";
+import Navbar from "./Paginas/SidebarDashboard";
 import Clientes from "./components/Clientes";
 import AddDatos from "./components/AddDatos";
 import DetalleCliente from "./components/DetalleCliente";
@@ -63,7 +63,7 @@ function App() {
   const isDashboardRoute = location.pathname === "/dashboard";
   return (
     <>
-      {isDashboardRoute ? <Navbar></Navbar> : null}
+      {/* {isDashboardRoute ? <Navbar></Navbar> : null} */}
       <Routes>
         <Route
           path="/"
