@@ -4,7 +4,7 @@ import App from "./App.jsx";
 import "./index.css";
 import { DataContextProvider } from "./context/Provider.jsx";
 import { BrowserRouter } from "react-router-dom";
-
+import "./fonts.css";
 ReactDOM.createRoot(document.getElementById("root")).render(
   <DataContextProvider>
     <BrowserRouter>

@@ -1,5 +1,6 @@
 import React, { createContext, useEffect, useState } from "react";
 import config from "../config";
+import { useNavigate } from "react-router-dom";
 
 export const DataContext = createContext();
 
@@ -30,6 +31,12 @@ export const DataContextProvider = ({ children }) => {
       setValidToken(true);
     }
   };
+  const outhSession = async () => {
+    await localStorage.removeItem(config.localStorage);
+    setValidToken(false);
+    setIsLoggedIn(false);
+    setDataAuth([]);
+  };
   const STATES_MODIFIC = {
     //exportaciones
     authUser, //exportamos elestado
@@ -38,6 +45,7 @@ export const DataContextProvider = ({ children }) => {
     setIsLoggedIn,
     validToken,
     setValidToken,
+    outhSession,
   };
   useEffect(()=>{
     evaluateAuth();

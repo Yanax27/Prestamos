@@ -21,6 +21,9 @@ import { Toaster } from "react-hot-toast";
 import { DataContext } from "./context/Provider";
 import config from "./config";
 import { Dashboard } from "./layouts/Dashboard";
+import { TableIngresos } from "./components/TableIngresos";
+import { TableEgresos } from "./components/TableEgresos";
+import NotFound from "./Paginas/NotFound";
 
 function App() {
   const {
@@ -85,89 +88,20 @@ function App() {
             </ProtectedRoute>
           }
         >
-          <Route path="ingresos/egresos" element={<IngresoEgreso />} />
+          <Route path="ingresos" element={<TableIngresos />} />
+          <Route path="egresos" element={<TableEgresos />} />
           <Route path="clientes" element={<Clientes />} />
           <Route path="agregar/cliente/:clienteId" element={<AddDatos />} />
           <Route path="detalle/cliente/:clienteId" element={<DetalleCliente />}/>
           <Route path="detalle/cuenta/:cuentaId" element={<DetalleCuenta />} />
           <Route path="perfil" element={<Perfil />} />
-          <Route path="cuentas" element={<Cuentas />} />
+          <Route path="cuentas" element={<Cuentas />} /> 
         </Route>
+        <Route path="*" element={<NotFound />} />
+        <Route path="/login" element={<Login />}></Route>
       </Routes>
     </>
   );
 }
 
 export default App;
-
-{
-}
-{
-  /* <Navbar
-            visible={navVisible}
-            show={showNavbar}
-            hideNavbar={hideNavbar}
-          />
-          <Routes>
-            <Route path="/" element={<Navigate to="/dashboard" />} />
-            <Route
-              path="/dashboard"
-              element={
-                <div className={!navVisible ? "page" : "page page-with-navbar"}>
-                  <ResumenFinanciero />
-                </div>
-              }
-            /> 
-            <Route
-              path="/Clientes"
-              element={
-                <div className={!navVisible ? "page" : "page page-with-navbar"}>
-                  <Clientes />
-                </div>
-              }
-            />
-            <Route
-              path="/AddDatos/:clienteId"
-              element={
-                <div className={!navVisible ? "page" : "page page-with-navbar"}>
-                  <AddDatos />
-                </div>
-              }
-            />
-            <Route
-              path="/DetalleCliente/:clienteId"
-              element={
-                <div className={!navVisible ? "page" : "page page-with-navbar"}>
-                  <DetalleCliente />
-                </div>
-              }
-            />
-            <Route
-              path="/Cuentas"
-              element={
-                <div className={!navVisible ? "page" : "page page-with-navbar"}>
-                  <Cuentas />
-                </div>
-              }
-            />
-            <Route
-              path="/DetalleCuenta/:cuentaId"
-              element={
-                <div className={!navVisible ? "page" : "page page-with-navbar"}>
-                  <DetalleCuenta />
-                </div>
-              }
-            />
-            <Route
-              path="/perfil"
-              element={
-                <div className={!navVisible ? "page" : "page page-with-navbar"}>
-                  <Perfil onCerrarSesion={handleLogout} />
-                </div>
-              }
-            />
-          </Routes> */
-}
-{
-  /* </div> */
-}
