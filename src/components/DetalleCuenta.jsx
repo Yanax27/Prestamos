@@ -107,7 +107,7 @@ const DetalleCuenta = () => {
     return (
         <div className="detalle-cuenta">
             <div className="header">
-                <NavLink className="volver-btn" to={`/DetalleCliente/${ClienteId}`}>
+                <NavLink className="volver-btn" to={`/dashboard/detalle/cliente/${ClienteId}`}>
                     <FaArrowLeft size={20} />
                     <span>Volver</span>
                 </NavLink>

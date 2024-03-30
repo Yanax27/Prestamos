@@ -1,4 +1,4 @@
-@media print {
+/*@media print {
     .table, .table__body {
      overflow: visible;
      height: auto !important;
@@ -7,19 +7,13 @@
    }
 
    
-   /*body {
-       min-height: 100vh;
-       background: url(images/html_table.jpg) center / cover;
-       display: flex;
-       justify-content: center;
-       align-items: center;
-   }*/
+
    .spinner-container {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 1000; /* Asegura que esté encima de otros elementos si es necesario */
+    z-index: 1000; 
   }
    
    main.table {
@@ -282,4 +276,4 @@
   button.add:hover {
     background-color:rgb(118, 167, 231); 
 
-  }
+  }*/

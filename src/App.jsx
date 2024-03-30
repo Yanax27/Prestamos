@@ -87,7 +87,7 @@ function App() {
         >
           <Route path="ingresos/egresos" element={<IngresoEgreso />} />
           <Route path="clientes" element={<Clientes />} />
-          <Route path="añadir/datos/:clienteId" element={<AddDatos />} />
+          <Route path="agregar/cliente/:clienteId" element={<AddDatos />} />
           <Route path="detalle/cliente/:clienteId" element={<DetalleCliente />}/>
           <Route path="detalle/cuenta/:cuentaId" element={<DetalleCuenta />} />
           <Route path="perfil" element={<Perfil />} />

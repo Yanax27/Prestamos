@@ -74,7 +74,8 @@ function Navbar() {
                 </span> */}
               </a>
             </li>
-          </Link> 
+          </Link > 
+          <Link to={"/dashboard"}>
           <li>
             <a
               href="#"
@@ -98,6 +99,7 @@ function Navbar() {
               <span className="flex-1 ms-3 whitespace-nowrap">Sign In</span>
             </a>
           </li>
+          </Link>
         </ul>
       </div>
     </aside>
