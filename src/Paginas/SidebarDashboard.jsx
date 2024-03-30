@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   FaAngleRight,
   FaAngleLeft,
@@ -8,18 +8,24 @@ import {
   FaUsers,
   FaUser,
 } from "react-icons/fa";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, Navigate, useNavigate } from "react-router-dom";
 import "../styles/Navbar.css";
 import Client from "../assets/Client.png";
 import EgresosSidebar from "../assets/EgresosSidebar.png";
+import IngresosSidebar from "../assets/IngresosSidebar.png";
+import { DataContext } from "../context/Provider";
+
 
 const ICON_SIZE = 20;
 
-function Navbar() {
-  const [visible, setNavVisible] = useState(false);
-  const [show, setNavShow] = useState(false);
-  const [hideNavbar, setHideNavbar] = useState(false);
+function Navbar() { 
+  const { outhSession } = useContext(DataContext);
+  const navigate = useNavigate(); // Obtén la función de navegación
 
+  const handleOuthSession = async () => {
+    await outhSession();
+    //navigate("/"); // Navega a la página de inicio
+  };
   return (
     <aside
       id="default-sidebar"
@@ -59,45 +65,61 @@ function Navbar() {
               </a>
             </li>
           </Link>
-          <Link to={"/dashboard/ingresos/egresos"}>
+          <Link to={"/dashboard/ingresos"}>
             <li>
               <a
                 href="#"
                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
               >
-                <img src={EgresosSidebar} alt="Egresos"  className="w-12" />
-                <span className="flex-1 ms-3 whitespace-nowrap">
-                  Ingresos y egresos
-                </span>
+                <img src={IngresosSidebar} alt="Egresos" className="w-12" />
+                <span className="flex-1 ms-3 whitespace-nowrap">Ingresos</span>
                 {/* <span className="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">
                   3
                 </span> */}
               </a>
             </li>
-          </Link> 
-          <li>
-            <a
-              href="#"
-              className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-            >
-              <svg
-                className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 18 16"
+          </Link>
+          <Link to={"/dashboard/egresos"}>
+            <li>
+              <a
+                href="#"
+                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
               >
-                <path
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M1 8h11m0 0L8 4m4 4-4 4m4-11h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-3"
-                />
-              </svg>
-              <span className="flex-1 ms-3 whitespace-nowrap">Sign In</span>
-            </a>
-          </li>
+                <img src={EgresosSidebar} alt="Egresos" className="w-12" />
+                <span className="flex-1 ms-3 whitespace-nowrap">Egresos</span>
+                {/* <span className="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">
+                  3
+                </span> */}
+              </a>
+            </li>
+          </Link>
+          <Link to={"/login"} >
+            <li>
+              <button
+                onClick={handleOuthSession}
+                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+              >
+                <svg
+                  className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 18 16"
+                >
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M1 8h11m0 0L8 4m4 4-4 4m4-11h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-3"
+                  />
+                </svg>
+                <span className="flex-1 ms-3 whitespace-nowrap">
+                  Cerrar sesion
+                </span>
+              </button>
+            </li>
+          </Link>
         </ul>
       </div>
     </aside>

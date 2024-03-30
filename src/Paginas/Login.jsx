@@ -41,6 +41,7 @@ const Login = () => {
         setDataAuth(response.user);
         setIsLoggedIn(true),
         setValidToken(true); 
+        navigate("/dashboard");
       }
     } catch (error) {
       setButton(false);

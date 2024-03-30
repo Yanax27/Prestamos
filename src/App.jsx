@@ -21,6 +21,9 @@ import { Toaster } from "react-hot-toast";
 import { DataContext } from "./context/Provider";
 import config from "./config";
 import { Dashboard } from "./layouts/Dashboard";
+import { TableIngresos } from "./components/TableIngresos";
+import { TableEgresos } from "./components/TableEgresos";
+import NotFound from "./Paginas/NotFound";
 
 function App() {
   const {
@@ -85,14 +88,20 @@ function App() {
             </ProtectedRoute>
           }
         >
-          <Route path="ingresos/egresos" element={<IngresoEgreso />} />
+          <Route path="ingresos" element={<TableIngresos />} />
+          <Route path="egresos" element={<TableEgresos />} />
           <Route path="clientes" element={<Clientes />} />
           <Route path="añadir/datos/:clienteId" element={<AddDatos />} />
-          <Route path="detalle/cliente/:clienteId" element={<DetalleCliente />}/>
+          <Route
+            path="detalle/cliente/:clienteId"
+            element={<DetalleCliente />}
+          />
           <Route path="detalle/cuenta/:cuentaId" element={<DetalleCuenta />} />
           <Route path="perfil" element={<Perfil />} />
-          <Route path="cuentas" element={<Cuentas />} />
+          <Route path="cuentas" element={<Cuentas />} /> 
         </Route>
+        <Route path="*" element={<NotFound />} />
+        <Route path="/login" element={<Login />}></Route>
       </Routes>
     </>
   );
