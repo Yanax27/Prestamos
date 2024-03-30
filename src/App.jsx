@@ -91,11 +91,8 @@ function App() {
           <Route path="ingresos" element={<TableIngresos />} />
           <Route path="egresos" element={<TableEgresos />} />
           <Route path="clientes" element={<Clientes />} />
-          <Route path="añadir/datos/:clienteId" element={<AddDatos />} />
-          <Route
-            path="detalle/cliente/:clienteId"
-            element={<DetalleCliente />}
-          />
+          <Route path="agregar/cliente/:clienteId" element={<AddDatos />} />
+          <Route path="detalle/cliente/:clienteId" element={<DetalleCliente />}/>
           <Route path="detalle/cuenta/:cuentaId" element={<DetalleCuenta />} />
           <Route path="perfil" element={<Perfil />} />
           <Route path="cuentas" element={<Cuentas />} /> 

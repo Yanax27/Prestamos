@@ -201,7 +201,7 @@ const AddDatos = () => {
                 Guardar
               </button>
             )}
-            <NavLink className="modal-button cancel-button" to="/Clientes">
+            <NavLink className="modal-button cancel-button" to="/dashboard/clientes">
               <FaTimes />
               Cancelar
             </NavLink>
@@ -211,7 +211,7 @@ const AddDatos = () => {
       {showAlert && (
         <div className="custom-alert">
           <p>{alertMessage}</p>
-          <NavLink onClick={() => setShowAlert(false)} to={"/Clientes"}>
+          <NavLink onClick={() => setShowAlert(false)} to={"/dashboard/clientes"}>
             Cerrar
           </NavLink>
         </div>
