@@ -19,7 +19,6 @@ const DetalleCuenta = () => {
             try {
                 const docRef = doc(db, "PrestamosDB", cuentaId);
                 const docSnap = await getDoc(docRef);
-
                 if (docSnap.exists()) {
                     const data = docSnap.data();
                     setCuentaData(data);
