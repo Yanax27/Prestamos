@@ -9,9 +9,10 @@ import Cuentas from "./Cuentas";
 const DetalleCliente = () => {
   const navigate = useNavigate();
 
-  const handleVolver = () => {
+ /*const handleVolver = () => {
     navigate(-1); // Navega hacia atrás en el historial del navegador
-  };
+  };*/
+
   const { clienteId } = useParams();
   const [clienteData, setClienteData] = useState(null);
   const [loading, setLoading] = useState(true);

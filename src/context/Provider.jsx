@@ -22,6 +22,7 @@ export const DataContextProvider = ({ children }) => {
       user: data,
     });
   };
+  
   const evaluateAuth = async () =>{ 
     const response = await localStorage.getItem(config.localStorage);
     if(response){
