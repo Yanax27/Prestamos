@@ -1,6 +1,7 @@
 import React, { createContext, useEffect, useState } from "react";
 import config from "../config";
 import { useNavigate } from "react-router-dom";
+import { logoutSessionToken, validTokenSession } from "../http/fetchGet";
 
 export const DataContext = createContext();
 
@@ -23,16 +24,18 @@ export const DataContextProvider = ({ children }) => {
     });
   };
   const evaluateAuth = async () =>{ 
-    const response = await localStorage.getItem(config.localStorage);
-    if(response){
-      const dataConvert = JSON.parse(response);
-      setDataAuth(dataConvert);
+    const response = await validTokenSession(); 
+    if(response.data.data.userData){ 
+      setDataAuth({
+        ...authUser,
+        user: response.data.data.userData,
+      });
       setIsLoggedIn(true);
       setValidToken(true);
-    }
+    } 
   };
-  const outhSession = async () => {
-    await localStorage.removeItem(config.localStorage);
+  const logoutSession = async () => {
+    const response = await logoutSessionToken();
     setValidToken(false);
     setIsLoggedIn(false);
     setDataAuth([]);
@@ -45,7 +48,8 @@ export const DataContextProvider = ({ children }) => {
     setIsLoggedIn,
     validToken,
     setValidToken,
-    outhSession,
+    logoutSession,
+    evaluateAuth
   };
   useEffect(()=>{
     evaluateAuth();

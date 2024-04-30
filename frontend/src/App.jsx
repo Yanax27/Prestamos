@@ -24,6 +24,8 @@ import { Dashboard } from "./layouts/Dashboard";
 import { TableIngresos } from "./components/TableIngresos";
 import { TableEgresos } from "./components/TableEgresos";
 import NotFound from "./Paginas/NotFound";
+import { validTokenSession } from "./http/fetchGet";
+import { set } from "react-hook-form";
 
 function App() {
   const {
@@ -33,6 +35,7 @@ function App() {
     isLoggedIn,
     validToken,
     setValidToken,
+    evaluateAuth,
   } = useContext(DataContext);
   const location = useLocation();
   //const [navVisible, setNavVisible] = useState(false); // Agrega estado para controlar la visibilidad del navbar
@@ -47,59 +50,71 @@ function App() {
   const handleLogout = () => {
     setIsLoggedIn(false);
   };
-  const ValidateRedir = ({ auth, validate, redirecTo, children }) => {
-    //RUTAS REDIRECT
-    if (auth && validate) {
+  const ValidateRedir = ({ redirecTo, children }) => {
+    if (authUser.user && validToken) {
       return <Navigate to={redirecTo}></Navigate>;
     }
-    if (!auth) return children;
+    if (!authUser.user) return children;
   };
 
-  const ProtectedRoute = ({ auth, validate, children }) => {
-    if (auth && validate) {
+  const ProtectedRouteRoles = ({ children }) => {
+    if (authUser.user && authUser.user.rol == "Administrador") {
       return children;
     }
-    const response = localStorage.getItem(config.localStorage);
-    if (!response) return <Navigate to={"/"}></Navigate>;
+    return <Navigate to={"/login"}></Navigate>;
   };
-
+  const validSessionToken = async () => {
+    const response = await validTokenSession();
+    if(response.data.data.userData){
+      setDataAuth({
+        ...authUser,
+        user: response.data.data.userData,
+      });
+      setIsLoggedIn(true);
+      setValidToken(true);
+    }
+    
+  };
   const isDashboardRoute = location.pathname === "/dashboard";
+  useEffect(() => {
+    // validSessionToken();
+  }, []);
   return (
     <>
       {/* {isDashboardRoute ? <Navbar></Navbar> : null} */}
       <Routes>
         <Route
-          path="/"
+          path="/login"
           element={
-            <ValidateRedir
-              auth={authUser.user}
-              validate={validToken}
-              redirecTo="/dashboard"
-            >
+            <ValidateRedir redirecTo="/">
               <Login />
             </ValidateRedir>
           }
-        />
+        ></Route>
+
         <Route
-          path="/dashboard"
+          path="/"
           element={
-            <ProtectedRoute auth={isLoggedIn} validate={validToken}>
+            <ProtectedRouteRoles>
               <Dashboard />
-            </ProtectedRoute>
+            </ProtectedRouteRoles>
           }
         >
           <Route path="ingresos" element={<TableIngresos />} />
           <Route path="egresos" element={<TableEgresos />} />
           <Route path="clientes" element={<Clientes />} />
           <Route path="agregar/cliente/:clienteId" element={<AddDatos />} />
-          <Route path="detalle/cliente/:clienteId" element={<DetalleCliente />}/>
+          <Route
+            path="detalle/cliente/:clienteId"
+            element={<DetalleCliente />}
+          />
           <Route path="detalle/cuenta/:cuentaId" element={<DetalleCuenta />} />
           <Route path="perfil" element={<Perfil />} />
-          <Route path="cuentas" element={<Cuentas />} /> 
+          <Route path="cuentas" element={<Cuentas />} />
         </Route>
         <Route path="*" element={<NotFound />} />
-        <Route path="/login" element={<Login />}></Route>
       </Routes>
+      <Toaster></Toaster>
     </>
   );
 }

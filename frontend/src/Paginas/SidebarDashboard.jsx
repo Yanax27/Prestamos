@@ -19,11 +19,11 @@ import { DataContext } from "../context/Provider";
 const ICON_SIZE = 20;
 
 function Navbar() { 
-  const { outhSession } = useContext(DataContext);
+  const { logoutSession } = useContext(DataContext);
   const navigate = useNavigate(); // Obtén la función de navegación
 
   const handleOuthSession = async () => {
-    await outhSession();
+    await logoutSession();
     //navigate("/"); // Navega a la página de inicio
   };
   return (

@@ -21,13 +21,13 @@ server.use(cookieParser());
 // Aplicar middleware CORS antes de definir las rutas
 server.use(
   cors({
-    origin: "*", // reemplaza esto con el origen de tu frontend
+    origin: "http://localhost:5173", // reemplaza esto con el origen de tu frontend
     credentials: true,
   })
 );
 
 // Middleware para manejar solicitudes OPTIONS
-server.options("*", cors());
+// server.options("*", cors());
 
 // Aplicar encabezados CORS manualmente
 server.use((req, res, next) => {

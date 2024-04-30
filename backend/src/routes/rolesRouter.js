@@ -1,8 +1,8 @@
 const express = require("express");
+const { catchedAsync } = require("../utils");
+const { createRol } = require("../controllers/rolesController");
 const router = express();
 
-router.get("/", (req, res) => {
-  res.send("Roles");
-});
+router.post("/", catchedAsync(createRol) );
 
 module.exports = router;

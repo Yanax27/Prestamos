@@ -4,11 +4,11 @@ import { DataContext } from "../context/Provider";
 
 export const NavbarDashboard = () => {
   const [menuProfile, setMenuProfile] = useState(false);
-  const { outhSession } = useContext(DataContext);
+  const { logoutSession } = useContext(DataContext);
 
   const handleOuthSession = async () => {
-    await outhSession();
-    //navigate("/"); // Navega a la página de inicio
+    await logoutSession();
+    //navigate("/"); // Navega a la página de inicio 
   };
   return (
     <nav className="bg-white-800 margin border border-b-gray-300">
