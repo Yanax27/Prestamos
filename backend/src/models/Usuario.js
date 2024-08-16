@@ -16,10 +16,6 @@ module.exports = (sequelize) => {
         type:DataTypes.TEXT,
         allowNull: true,
     },
-    apellido: {
-        type:DataTypes.TEXT,
-        allowNull: true,
-    },
     correo:{
         type:DataTypes.TEXT,
         allowNull: true,

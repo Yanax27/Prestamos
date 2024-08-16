@@ -14,6 +14,7 @@ class PrestarioService {
 
   async getAllPrestarios(PrestarioModel) {
     // Pasamos el modelo al DAO
+
     return await prestarioDao.getAllPrestarios(PrestarioModel);
   }
 

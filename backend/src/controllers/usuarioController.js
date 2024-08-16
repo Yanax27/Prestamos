@@ -1,13 +1,34 @@
+const response  = require('../utils/response');
+const resError  = require('../utils/resError');
+const catchedAsync = require('../utils/catchedAsync');
 const { Usuario } = require("../db");
-const { response } = require("../utils");
+const usuarioService = require('../services/usuario.service');
 
-module.exports = {
-  userController: async (req, res) => {
-    res.status(200).send("<h1>Welcolme Prestamos App!</h1>");
-  },
-  postCreateUser: async (req, res) => {
-    const usuario = req.body;
-    const newUsuer = await Usuario.create(usuario);
-    response(res, 200, {MessageChannel:"User create Successfully"});
-  },
-};
+
+class UsuarioController{
+// obtener todos los usuarios
+getAllUsuarios = catchedAsync(async(req, res)=>{
+const usuarios = await usuarioService.getAllUsuarios(Usuario);
+
+return response(res, 200, usuarios);
+});
+
+//obtenemmos por id
+getUsuariosbyId = catchedAsync(async(res, req)=>{
+  const {id} = req.params;
+  const usuario = usuarioService.getUsuarioById(id,Usuario);
+  if (!usuario) {
+    return resError(res, 404, "Usuario not founf");
+  }
+  return response(res, 200, usuario);
+});
+
+//crear usuario
+createUsuario = catchedAsync(async(res, req)=>{
+  usuarioData = { ...req.body};
+  const usuario = await usuarioService.createUsuario(usuarioData, Usuario);
+  return response(res, 201, usuario);
+});
+
+}
+module.exports = new UsuarioController();
