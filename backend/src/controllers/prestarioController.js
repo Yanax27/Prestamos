@@ -6,7 +6,7 @@ const { Prestario } = require('../db'); // Importamos el modelo
 
 
 class PrestarioController {
-  // Obtener todos los prestarios
+  // prestarios
   createPrestario = catchedAsync(async (req, res) => {
     const prestarioData = { ...req.body };
     
