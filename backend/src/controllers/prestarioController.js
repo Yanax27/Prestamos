@@ -1,39 +1,11 @@
 const prestarioService = require('../services/prestario.service');
-const { response } = require('../utils/response');
-const { resError } = require('../utils/resError');
+const response  = require('../utils/response');
+const resError  = require('../utils/resError');
 const catchedAsync = require('../utils/catchedAsync');
-const { Prestario } = require('../models/Prestario'); // Importamos el modelo 
+const { Prestario } = require('../db'); // Importamos el modelo 
 
-/*const prestarioService = require('../services/prestarioService');
-const { catchedAsync } = require('../utils/catchedAsync');
-const { response, resError } = require('../utils/response');*/
 
 class PrestarioController {
-  createPrestario = catchedAsync(async (req, res) => {
-    const prestarioData = { ...req.body };
-    const prestario = await prestarioService.createPrestario(prestarioData);
-    return response(res, 201, prestario);
-  });
-
-  getAllPrestarios = catchedAsync(async (req, res) => {
-    const prestarios = await prestarioService.getAllPrestarios();
-    return response(res, 200, prestarios);
-  });
-
-  getPrestarioById = catchedAsync(async (req, res) => {
-    const { id } = req.params;
-    const prestario = await prestarioService.getPrestarioById(id);
-    if (!prestario) {
-      return resError(res, 404, "Prestario not found");
-    }
-    return response(res, 200, prestario);
-  });
-}
-
-module.exports = new PrestarioController();
-
-
-/*class PrestarioController {
   // Obtener todos los prestarios
   createPrestario = catchedAsync(async (req, res) => {
     const prestarioData = { ...req.body };
@@ -67,7 +39,7 @@ module.exports = new PrestarioController();
   updatePrestario = catchedAsync(async (req, res) => {
     const { id } = req.params;
     const prestarioData = req.body;
-    const updatedPrestario = await prestarioService.updatePrestario(id, prestarioData);
+    const updatedPrestario = await prestarioService.updatePrestario(id, prestarioData, Prestario);
     if (!updatedPrestario) {
       return resError(res, 404, "Prestario not found");
     }
@@ -77,7 +49,9 @@ module.exports = new PrestarioController();
   // Eliminar un prestario
   deletePrestario = catchedAsync(async (req, res) => {
     const { id } = req.params;
-    const deletedPrestario = await prestarioService.deletePrestario(id);
+    //console.log("id prestario",id)
+    const deletedPrestario = await prestarioService.deletePrestario(id, Prestario);
+    //console.log("true?",deletedPrestario)
     if (!deletedPrestario) {
       return resError(res, 404, "Prestario not found");
     }
@@ -86,5 +60,5 @@ module.exports = new PrestarioController();
 }
 
 module.exports = new PrestarioController();
-*/
+
 

@@ -1,26 +1,8 @@
 const { ClientError } = require('../utils/errors');
 const prestarioDao = require('../daos/PrestarioDao');
 
+
 class PrestarioService {
-  async createPrestario(prestarioData) {
-    if (!prestarioData) {
-      throw new ClientError('Prestario data is required', 400);
-    }
-    return await prestarioDao.createPrestario(prestarioData);
-  }
-
-  async getAllPrestarios() {
-    return await prestarioDao.getAllPrestarios();
-  }
-
-  async getPrestarioById(id) {
-    return await prestarioDao.getPrestarioById(id);
-  }
-}
-
-module.exports = new PrestarioService();
-
-/*class PrestarioService {
   async createPrestario(prestarioData, PrestarioModel) {
     if (!prestarioData) {
       throw new ClientError('Prestario data is required', 400);
@@ -57,4 +39,4 @@ module.exports = new PrestarioService();
   }
 }
 
-module.exports = new PrestarioService();*/
+module.exports = new PrestarioService();
