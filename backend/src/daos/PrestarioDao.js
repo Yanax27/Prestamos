@@ -1,4 +1,22 @@
+const { Prestario } = require('../models/Prestario');
+
 class PrestarioDao {
+  async createPrestario(prestarioData) {
+    return await Prestario.create(prestarioData);  // Sequelize crea el registro
+  }
+  async getAllPrestarios(PrestarioModel) {
+    console.log(PrestarioModel)
+    return await PrestarioModel.findAll();
+  }
+
+  async getPrestarioById(id) {
+    return await Prestario.findByPk(id);  // Recupera un prestario por su ID
+  }
+}
+
+module.exports = new PrestarioDao();
+
+/*class PrestarioDao {
     // Obtener todos los prestarios
     async getAllPrestarios(PrestarioModel) {
       return await PrestarioModel.findAll();
@@ -32,4 +50,8 @@ class PrestarioDao {
   }
   
   module.exports = new PrestarioDao();
+
+*/
+
+  
   
