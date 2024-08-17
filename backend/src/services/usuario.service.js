@@ -7,7 +7,7 @@ class UsuarioService {
         return await usuarioDao.getAllUsuarios(UsuarioModel);
     }
 
-    async getPrestarioById(id, UsuarioModel) {
+    async getUsuarioById(id, UsuarioModel) {
         // Pasamos el modelo al DAO
         return await usuarioDao.getUsuarioById(id, UsuarioModel);
     }
@@ -19,15 +19,15 @@ class UsuarioService {
         return await usuarioDao.createUsuario(usuarioData, UsuarioModel);
     }
     async updateUsuario(id, usuarioData, UsuarioModel) {
-        const usuario = await usuarioDao.updatePrestario(id, usuarioData, UsuarioModel);
+        const usuario = await usuarioDao.updateUsuario(id, usuarioData, UsuarioModel);
         if (!usuario) {
             throw new ClientError("Usuario not found", 404);
         }
         return usuario;
     }
 
-    async deleteUsuario(id, PrestarioModel) {
-        const usuario = await prestarioDao.deleteUsuario(id, UsuarioModel);
+    async deleteUsuario(id, UsuarioModel){
+        const usuario = await usuarioDao.deleteUsuario(id, UsuarioModel);
         if (!usuario) {
             throw new ClientError("Usuario not found", 404);
         }

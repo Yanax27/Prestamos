@@ -1,13 +1,13 @@
-const Usuario = require("../models/Usuario");
+
 
 class UsuarioDao {
     //obtener todos los usuarios
     async getAllUsuarios(UsuarioModel) {
-        return await Usuario.findAll();
+        return await UsuarioModel.findAll();
     }
 //obtener usuario por id
     async getUsuarioById(id, UsuarioModel) {
-        return await UsuarioModel.findbyId(id);
+        return await UsuarioModel.findByPk(id);
     }
     // Crear un nuevo usuarios
     async createUsuario(usuarioData, UsuarioModel) {
