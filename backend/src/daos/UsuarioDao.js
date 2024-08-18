@@ -1,17 +1,22 @@
-const Usuario = require("../models/Usuario");
+
 
 class UsuarioDao {
     //obtener todos los usuarios
     async getAllUsuarios(UsuarioModel) {
-        return await Usuario.findAll();
+        return await UsuarioModel.findAll();
     }
 //obtener usuario por id
     async getUsuarioById(id, UsuarioModel) {
-        return await UsuarioModel.findbyId(id);
+        return await UsuarioModel.findByPk(id);
     }
     // Crear un nuevo usuarios
     async createUsuario(usuarioData, UsuarioModel) {
         return await UsuarioModel.create(usuarioData);
+    }
+    async getUsuarioByEmail(email, UsuarioModel) {
+        return await UsuarioModel.findOne({
+            where: { email }
+        });
     }
     // Actualizar un usuario
     async updateUsuario(id, usuarioData, UsuarioModel) {

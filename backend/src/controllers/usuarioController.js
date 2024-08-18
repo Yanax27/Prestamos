@@ -1,34 +1,95 @@
-const response  = require('../utils/response');
-const resError  = require('../utils/resError');
+const response = require('../utils/response');
+const resError = require('../utils/resError');
 const catchedAsync = require('../utils/catchedAsync');
 const { Usuario } = require("../db");
 const usuarioService = require('../services/usuario.service');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const { JWT_SECRET, JWT_EXPIRES_IN } = process.env;
 
 
-class UsuarioController{
-// obtener todos los usuarios
-getAllUsuarios = catchedAsync(async(req, res)=>{
-const usuarios = await usuarioService.getAllUsuarios(Usuario);
+class UsuarioController {
+  // obtener todos los usuarios
+  getAllUsuarios = catchedAsync(async (req, res) => {
+    const usuarios = await usuarioService.getAllUsuarios(Usuario);
+    return response(res, 200, usuarios);
+  });
 
-return response(res, 200, usuarios);
-});
+  //obtenemmos por id
+  getUsuariobyId = catchedAsync(async (req, res) => {
+    const { id } = req.params;
+    const usuario = await usuarioService.getUsuarioById(id, Usuario);
+    if (!usuario) {
+      return resError(res, 404, "Usuario not found");
+    }
+    return response(res, 200, usuario);
+  });
 
-//obtenemmos por id
-getUsuariosbyId = catchedAsync(async(res, req)=>{
-  const {id} = req.params;
-  const usuario = usuarioService.getUsuarioById(id,Usuario);
-  if (!usuario) {
-    return resError(res, 404, "Usuario not founf");
-  }
-  return response(res, 200, usuario);
-});
+  //crear usuario
+  createUsuario = catchedAsync(async (req, res) => {
+    const { password, ...usuarioData } = req.body;
+     // Hasheamos la contraseña
+     const hashedPassword = await bcrypt.hash(password, 10);
 
-//crear usuario
-createUsuario = catchedAsync(async(res, req)=>{
-  usuarioData = { ...req.body};
-  const usuario = await usuarioService.createUsuario(usuarioData, Usuario);
-  return response(res, 201, usuario);
-});
+    const usuario = await usuarioService.createUsuario({ ...usuarioData, password: hashedPassword }, Usuario);
+    return response(res, 201, usuario);
+  });
+
+   // Iniciar sesión
+   login = catchedAsync(async (req, res) => {
+    const { email, password } = req.body;
+
+    // Verificamos si el usuario existe
+    const usuario = await usuarioService.getUsuarioByEmail(email, Usuario);
+    if (!usuario) {
+      return resError(res, 404, 'Usuario no encontrado');
+    }
+
+    // Verificamos si la contraseña es correcta
+    const isMatch = await bcrypt.compare(password, usuario.password);
+    if (!isMatch) {
+      return resError(res, 401, 'Contraseña incorrecta');
+    }
+
+    // Creamos el token JWT
+    const token = jwt.sign({ id: usuario.id, role: usuario.role }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+
+    // Establecemos el token en una cookie
+    res.cookie('jwt', token, {
+      httpOnly: false, // Para mayor seguridad
+      secure: process.env.NODE_ENV === 'production', // En producción, usar solo cookies seguras
+    });
+
+    return response(res, 200, { message: 'Login exitoso', token });
+  });
+  
+   // Cerrar sesión (opcional)
+   logout = catchedAsync(async (req, res) => {
+    res.clearCookie('jwt');
+    return response(res, 200, { message: 'Logout exitoso' });
+  });
+  
+  //actualizar usuario usuando id
+  updateUsuario = catchedAsync(async (req, res) => {
+
+    const { id } = req.params;
+    const usuariosData = req.body;
+    const updateUsuario = await usuarioService.updateUsuario(id, usuariosData, Usuario)
+    if (!updateUsuario) {
+      return resError(res, 404, "Usuario not found")
+    }
+    return response(res, 200, updateUsuario);
+  });
+
+  //eliminar suuario por id
+  deleteUsuario = catchedAsync(async (req, res) => {
+    const { id } = req.params;
+    const deletedUsuario = await usuarioService.deleteUsuario(id, Usuario);
+    if (!deletedUsuario) {
+      return resError(res, 404, "Usuario not found");
+    }
+    response(res, 204, null);
+  })
 
 }
 module.exports = new UsuarioController();
