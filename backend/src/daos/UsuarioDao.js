@@ -13,6 +13,11 @@ class UsuarioDao {
     async createUsuario(usuarioData, UsuarioModel) {
         return await UsuarioModel.create(usuarioData);
     }
+    async getUsuarioByEmail(email, UsuarioModel) {
+        return await UsuarioModel.findOne({
+            where: { email }
+        });
+    }
     // Actualizar un usuario
     async updateUsuario(id, usuarioData, UsuarioModel) {
         const usuario = await UsuarioModel.findByPk(id);

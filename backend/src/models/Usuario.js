@@ -16,11 +16,11 @@ module.exports = (sequelize) => {
         type:DataTypes.TEXT,
         allowNull: true,
     },
-    correo:{
+    email:{
         type:DataTypes.TEXT,
         allowNull: true,
     },
-    contraseña:{
+    password:{
         type:DataTypes.TEXT,
         allowNull: true,
     }

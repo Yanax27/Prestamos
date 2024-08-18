@@ -11,6 +11,11 @@ class UsuarioService {
         // Pasamos el modelo al DAO
         return await usuarioDao.getUsuarioById(id, UsuarioModel);
     }
+    //obtenemos usuario por email
+    async getUsuarioByEmail(email, UsuarioModel) {
+        return await usuarioDao.getUsuarioByEmail(email, UsuarioModel);
+    }
+
     async createUsuario(usuarioData, UsuarioModel) {
         if (!usuarioData) {
             throw new ClientError('Usuario data is required', 400);
