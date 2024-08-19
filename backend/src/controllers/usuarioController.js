@@ -28,15 +28,15 @@ class UsuarioController {
   //crear usuario
   createUsuario = catchedAsync(async (req, res) => {
     const { password, ...usuarioData } = req.body;
-     // Hasheamos la contraseña
-     const hashedPassword = await bcrypt.hash(password, 10);
+    // Hasheamos la contraseña
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const usuario = await usuarioService.createUsuario({ ...usuarioData, password: hashedPassword }, Usuario);
     return response(res, 201, usuario);
   });
 
-   // Iniciar sesión
-   login = catchedAsync(async (req, res) => {
+  // Iniciar sesión
+  login = catchedAsync(async (req, res) => {
     const { email, password } = req.body;
 
     // Verificamos si el usuario existe
@@ -44,7 +44,7 @@ class UsuarioController {
     if (!usuario) {
       return resError(res, 404, 'Usuario no encontrado');
     }
-
+    
     // Verificamos si la contraseña es correcta
     const isMatch = await bcrypt.compare(password, usuario.password);
     if (!isMatch) {
@@ -56,19 +56,23 @@ class UsuarioController {
 
     // Establecemos el token en una cookie
     res.cookie('jwt', token, {
-      httpOnly: false, // Para mayor seguridad
-      secure: process.env.NODE_ENV === 'production', // En producción, usar solo cookies seguras
+      httpOnly: true,     // Para que la cookie no sea accesible desde JavaScript en el frontend
+      secure: false,      // Cambia a 'true' si estás utilizando HTTPS
+      sameSite: 'lax',    // Evitar CSRF, puede ser 'lax', 'strict' o 'none'
+      domain: 'localhost',// Asegúrate de que coincida con el dominio
+      path: '/',          // La ruta donde será accesible la cookie
+     // maxAge: 24 * 60 * 60 * 1000 // Expiración en 24 horas
     });
 
     return response(res, 200, { message: 'Login exitoso', token });
   });
-  
-   // Cerrar sesión (opcional)
-   logout = catchedAsync(async (req, res) => {
+
+  // Cerrar sesión (opcional)
+  logout = catchedAsync(async (req, res) => {
     res.clearCookie('jwt');
     return response(res, 200, { message: 'Logout exitoso' });
   });
-  
+
   //actualizar usuario usuando id
   updateUsuario = catchedAsync(async (req, res) => {
 
