@@ -59,8 +59,9 @@ function App() {
     if (auth && validate) {
       return children;
     }
-    const response = localStorage.getItem(config.localStorage);
-    if (!response) return <Navigate to={"/"}></Navigate>;
+    return <Navigate to="/" />;
+   /* const response = localStorage.getItem(config.localStorage);
+    if (!response) return <Navigate to={"/"}></Navigate>;*/
   };
 
   const isDashboardRoute = location.pathname === "/dashboard";
@@ -72,7 +73,8 @@ function App() {
           path="/"
           element={
             <ValidateRedir
-              auth={authUser.user}
+              //auth={authUser.user}
+              auth={isLoggedIn}
               validate={validToken}
               redirecTo="/dashboard"
             >

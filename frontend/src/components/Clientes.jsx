@@ -4,11 +4,13 @@ import { db } from "../data/FIreBase";
 import { FaPlus, FaEdit, FaTrash, FaSearch } from "react-icons/fa";
 import { Link, NavLink } from "react-router-dom";
 import { Spinner } from "../components/Spinner";
+import { useLocation } from "react-router-dom";
 
 const Clientes = () => {
   const [datos, setDatos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const location = useLocation();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,10 +48,15 @@ const Clientes = () => {
     <main className=".">
 
       <section class="p-3">
+      <p className="text-gray-500 dark:text-gray-400">
+              {location.pathname}
+            </p>  
         <div class="max-w-screen-xl px-4 mx-auto lg:px-12 w-full">
           <div class="relative bg-white shadow-md dark:bg-gray-800 sm:rounded-lg">
+            
             <div class="flex flex-col items-center justify-between p-4 space-y-3 md:flex-row md:space-y-0 md:space-x-4">
               <div class="w-full md:w-1/2">
+            
                 <form class="flex items-center">
                   <label for="simple-search" class="sr-only">Search</label>
                   <div class="relative w-full">
