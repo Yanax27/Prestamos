@@ -10,8 +10,10 @@ server.use("/", (req, res) => {
 });
 //model to update
 server.use((err, req, res, next) => { //errores cacheados
-  const { statusCode, message } = err;
-  console.log("Muestrame el error ", statusCode, message);
+  /*const { statusCode, message } = err;
+  console.log("Muestrame el error ", statusCode, message);*/
+  const statusCode = err.statusCode || 500;
+  const message = err.message || 'Internal Server Error';
   resError(res, statusCode, message);
 });
 
