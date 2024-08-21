@@ -58,7 +58,7 @@ Usuario.hasOne(Cuenta); // Relación 1 a 1 entre Usuario y Cuenta
 Cuenta.belongsTo(Usuario); // La Cuenta pertenece a un Usuario
 
 Roles.hasOne(Usuario); // El Rol pertenece a un Usuario
-Usuario.belongsTo(Roles); // Relación 1 a 1 entre Usuario y Rol
+Usuario.belongsTo(Roles); // Relación 1 a 1 entre Usuario y Rolp
 
 Prestamo.belongsTo(Usuario); // Relación 1 a * entre Usuario y Prestamo
 Usuario.hasMany(Prestamo); // Un Usuario puede tener varios Prestamos

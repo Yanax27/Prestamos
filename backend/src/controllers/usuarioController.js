@@ -41,6 +41,7 @@ class UsuarioController {
 
     // Verificamos si el usuario existe
     const usuario = await usuarioService.getUsuarioByEmail(email, Usuario);
+    console.log(usuario.Role.tipo)
     if (!usuario) {
       return resError(res, 404, 'Usuario no encontrado');
     }
