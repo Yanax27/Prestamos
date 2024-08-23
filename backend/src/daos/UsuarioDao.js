@@ -1,9 +1,16 @@
 
-
 class UsuarioDao {
-    //obtener todos los usuarios
+    //obtener todos los usuar[ios
     async getAllUsuarios(UsuarioModel) {
-        return await UsuarioModel.findAll();
+        return await UsuarioModel.findAll(
+            {
+                attributes: { exclude: ['password'] },  
+                include: [{
+                    association: 'Role',
+                    attributes: ['tipo'] 
+                }]
+            },
+        );
     }
 //obtener usuario por id
     async getUsuarioById(id, UsuarioModel) {
@@ -15,8 +22,14 @@ class UsuarioDao {
     }
     async getUsuarioByEmail(email, UsuarioModel) {
         return await UsuarioModel.findOne({
-            where: { email }
-        });
+            where: { email },
+            include: [{
+                association: 'Role',
+                attributes: ['tipo'] 
+            }]
+        },
+        
+    );
     }
     // Actualizar un usuario
     async updateUsuario(id, usuarioData, UsuarioModel) {
