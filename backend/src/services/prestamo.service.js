@@ -4,9 +4,9 @@ const prestamoDao = require('../daos/PrestamoDao');
 
 class PrestamoService {
 
-  async getAllPrestarios(PrestamoModel) {
+  async getAllPrestamos(PrestamoModel, filter) {
     // Pasamos el modelo al DAO
-    return await prestamoDao.getAllPrestamos(PrestamoModel);
+    return await prestamoDao.getAllPrestamos(PrestamoModel, filter);
   }
 }
 
