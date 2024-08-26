@@ -17,7 +17,7 @@ class PrestamoService {
     return await prestamoDao.createPrestamo(prestamoData, PrestamoModel);
   }
   //obtener prestamo por id
-  async getPrestamoById(id, {PrestamoModel}) {
+  async getPrestamoById(id, PrestamoModel) {
     // Pasamos el modelo al DAO
     return await prestamoDao.getPrestamoById(id, PrestamoModel);
   }

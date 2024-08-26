@@ -8,10 +8,10 @@ module.exports = (sequelize) => {
       defaultValue: UUIDV4,
       allowNull: false,
     },
-    ci: {
+    /*ci: {
       type: DataTypes.TEXT,
       allowNull: true,
-    },
+    },*/
     nombre: {
       type: DataTypes.TEXT,
       allowNull: true,

@@ -45,7 +45,7 @@ class UsuarioController {
     if (!usuario) {
       return resError(res, 404, 'Usuario no encontrado');
     }
-    
+
     // Verificamos si la contraseña es correcta
     const isMatch = await bcrypt.compare(password, usuario.password);
     if (!isMatch) {
