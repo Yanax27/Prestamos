@@ -51,7 +51,7 @@ server.use((req, res, next) => {
 // );
 
 // Definir rutas después de aplicar el middleware CORS
-server.use("/api", router); //rutas www.yanarico.com/api/roles
+server.use("/api/", router); //rutas www.yanarico.com/api/roles
 //http://localhost:3001/api/
 server.use((err, req, res, next) => {
   const status = err.stats || 500;
