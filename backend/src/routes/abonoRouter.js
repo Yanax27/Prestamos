@@ -1,8 +1,12 @@
 const express = require("express");
-const { getAllAbonos, createAbono } = require("../controllers/abonoController");
+const abonoController = require("../controllers/abonoController")
 const router = express();
 
-// http://localhost:3001/api/abono/getall
-router.get("/getall",getAllAbonos);
-router.post("/create",createAbono)
+// Rutas
+router.get('/', abonoController.getAllAbonos);//obtener todo
+router.get('/:id', abonoController.getAbonoById); // obtener por id
+router.post('/', abonoController.createAbono);//crear prestario
+router.put('/:id', abonoController.updateAbono);// Update a Prestario
+router.delete('/:id', abonoController.deleteAbono);// Delete a Prestario
+
 module.exports = router;
