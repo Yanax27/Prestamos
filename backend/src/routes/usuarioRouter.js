@@ -22,7 +22,7 @@ module.exports = router;
 /*const express = require("express");
 const usuarioController = require("../controllers/usuarioController")
 const router = express();
- 
+
 // Rutas
 router.get('/', usuarioController.getAllUsuarios);//obtener todo
 router.get('/:id', usuarioController.getUsuariobyId); // obtener por id

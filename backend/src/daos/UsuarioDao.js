@@ -4,10 +4,10 @@ class UsuarioDao {
     async getAllUsuarios(UsuarioModel) {
         return await UsuarioModel.findAll(
             {
-                attributes: { exclude: ['password'] },  
+                attributes: { exclude: ['password'] },
                 include: [{
                     association: 'Role',
-                    attributes: ['tipo'] 
+                    attributes: ['tipo']
                 }]
             },
         );
@@ -25,10 +25,10 @@ class UsuarioDao {
             where: { email },
             include: [{
                 association: 'Role',
-                attributes: ['tipo'] 
+                attributes: ['tipo']
             }]
         },
-        
+
     );
     }
     // Actualizar un usuario
