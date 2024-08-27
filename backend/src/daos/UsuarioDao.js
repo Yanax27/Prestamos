@@ -1,3 +1,4 @@
+const { where } = require("sequelize");
 
 class UsuarioDao {
     //obtener todos los usuar[ios
@@ -14,7 +15,12 @@ class UsuarioDao {
     }
 //obtener usuario por id
     async getUsuarioById(id, UsuarioModel) {
-        return await UsuarioModel.findByPk(id);
+        return await UsuarioModel.findByPk(id,{
+          include: [{
+              association: 'Role',
+              attributes: ['tipo']
+          }]
+        });
     }
     // Crear un nuevo usuarios
     async createUsuario(usuarioData, UsuarioModel) {
