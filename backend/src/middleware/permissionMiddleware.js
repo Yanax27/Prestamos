@@ -12,10 +12,10 @@ const roleMiddleware = (requiredRole) => {
         return resError(res, 404, 'Usuario no encontrado');
       }
 
-      if (usuario.Role.tipo !== requiredRole) { // Verificamos el rol
+      if (usuario.Role.tipo !== requiredRole) { // Verificamos el rol si es diferente  de admin etnocen no tiene permiso
         return resError(res, 403, 'No tienes permiso para realizar esta acción');
       }
-
+      req.user;
       next();
     } catch (error) {
       return resError(res, 500, 'Error de servidor');
