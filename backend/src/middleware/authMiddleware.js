@@ -1,9 +1,10 @@
 const jwt = require('jsonwebtoken');
+const resError = require('../utils/resError');
 const { JWT_SECRET } = process.env;
 
 const authMiddleware = (req, res, next) => {
-  const token = req.cookies.jwt;
-
+  const token = req.cookies?.jwt;
+  console.log(token)
   if (!token) {
     return resError(res, 401, 'No autenticado');
   }

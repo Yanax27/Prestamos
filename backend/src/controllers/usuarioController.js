@@ -53,7 +53,7 @@ class UsuarioController {
     }
 
     // Creamos el token JWT
-    const token = jwt.sign({ id: usuario.id, role: usuario.role }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+    const token = jwt.sign({ id: usuario.id, email: usuario.email }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
 
     // Establecemos el token en una cookie
     res.cookie('jwt', token, {

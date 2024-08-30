@@ -1,4 +1,3 @@
-const prestarioService = require('../services/abono.service');
 const response  = require('../utils/response');
 const resError  = require('../utils/resError');
 const catchedAsync = require('../utils/catchedAsync');
