@@ -2,6 +2,7 @@ const response  = require('../utils/response');
 const resError  = require('../utils/resError');
 const catchedAsync = require('../utils/catchedAsync');
 const { Ingreso } = require('../db'); // Importamos el modelo
+const { Cuenta } = require('../db')//importamos cuenta
 const ingresoService = require('../services/ingreso.service');
 
 
@@ -11,7 +12,7 @@ class IngresoController {
     const ingresoData = { ...req.body };
 
     // Pasamos el modelo de Prestario al servicio
-    const ingreso = await ingresoService.createIngreso(ingresoData, Ingreso);
+    const ingreso = await ingresoService.createIngreso(ingresoData, Ingreso, Cuenta);
 
     return response(res, 201, ingreso);
   });
