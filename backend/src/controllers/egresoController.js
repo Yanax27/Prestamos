@@ -2,6 +2,7 @@ const response  = require('../utils/response');
 const resError  = require('../utils/resError');
 const catchedAsync = require('../utils/catchedAsync');
 const { Egreso } = require('../db'); // Importamos el modelo
+const { Cuenta } = require('../db'); // Importamos el modelo
 const egresoService = require('../services/egreso.service');
 
 
@@ -9,9 +10,8 @@ class EgresoController {
   // Obtener todos los prestarios
   createEgreso = catchedAsync(async (req, res) => {
     const egresoData = { ...req.body };
-
     // Pasamos el modelo de Prestario al servicio
-    const egreso = await egresoService.createEgreso(egresoData, Egreso);
+    const egreso = await egresoService.createEgreso(egresoData, Egreso, Cuenta);
 
     return response(res, 201, egreso);
   });

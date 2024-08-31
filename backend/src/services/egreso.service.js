@@ -1,14 +1,21 @@
 const { ClientError } = require('../utils/errors');
 const egresoDao = require('../daos/EgresoDao');
+const cuentaDao = require('../daos/CuentaDao');
 
 
 class EgresoService {
-  async createEgreso(egresoData, EgresoModel) {
+  async createEgreso(egresoData, IngresoModel, CuentaModel) {
     if (!egresoData) {
-      throw new ClientError('egreso data is required', 400);
+      throw new ClientError('Egreso data is required', 400);
     }
-    // Pasamos el modelo al DAO
-    return await egresoDao.createEgreso(egresoData, EgresoModel);
+
+    // Crear el egreso
+    const egreso = await egresoDao.createEgreso(egresoData, IngresoModel);
+
+    // Actualizar capital y cajaActual en la cuenta solicitando funcion desde cuentaDao
+    await cuentaDao.restarMontoACuenta(egreso.CuentumIdCuenta, egreso.monto, CuentaModel);
+
+    return egreso;
   }
 
   async getAllEgresos(EgresoModel) {
