@@ -30,5 +30,34 @@ class CuentaDao {
     await cuenta.destroy();
     return cuenta;
   }
+  //suma los montos de ingreso hecho a la cuenta
+  async sumarMontoACuenta(id_cuenta, monto, CuentaModel) {
+    const cuenta = await CuentaModel.findByPk(id_cuenta);
+    if (!cuenta) {
+      throw new Error("Cuenta no encontrada");
+    }
+
+    cuenta.capital += monto;
+    cuenta.cajaActual += monto;
+
+    await cuenta.save();
+
+    return cuenta;
+  }
+  //resta el monto de un egreso a la cuenta
+  async restarMontoACuenta(id_cuenta, monto, CuentaModel) {
+    const cuenta = await CuentaModel.findByPk(id_cuenta);
+    if (!cuenta) {
+      throw new Error("Cuenta no encontrada");
+    }
+
+    cuenta.capital =cuenta.capital - monto;
+    cuenta.cajaActual =cuenta.cajaActual - monto;
+
+    await cuenta.save();
+
+    return cuenta;
+  }
+
 }
 module.exports = new CuentaDao();
