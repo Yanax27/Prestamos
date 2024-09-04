@@ -7,9 +7,9 @@ export const loginUser = async (body) => {
         return await axios.post(`${config.typeRequest}://${config.apiUrl}/usuario/login`, body);
     } catch (error) {
         if (error.response) {
-            return error.response.data; // Devuelve el error del backend
+            return error.response.data; // Devuelve los datos del error del backend
         } else {
-            return { error: true, message: error.message }; // Devuelve un error genérico
+            return { error: true, message: error.message }; // Devuelve un error general
         }
     }
 
