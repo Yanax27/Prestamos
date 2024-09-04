@@ -22,4 +22,3 @@ conn.sync({ force: false }).then(() => {
     console.log("SERVER IS RUNNING IN PORT ",PORT);
   });
 });
-   

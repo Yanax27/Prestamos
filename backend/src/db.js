@@ -66,11 +66,11 @@ Usuario.hasMany(Prestamo); // Un Usuario puede tener varios Prestamos
 Abono.belongsTo(Prestamo); // Relación * a 1 entre Abono y Prestamo
 Prestamo.hasMany(Abono); // Un Prestamo puede tener varios Abonos
 
-Cuenta.hasMany(Ingreso); // Relación * a 1 entre Ingreso y Cuenta
-Ingreso.belongsTo(Cuenta); // Un Ingreso pertenece a una Cuenta
+Cuenta.hasMany(Ingreso, { onDelete: 'CASCADE' }); // Relación * a 1 entre Ingreso y Cuenta
+Ingreso.belongsTo(Cuenta, { onDelete: 'CASCADE' }); // Un Ingreso pertenece a una Cuenta
 
-Cuenta.hasMany(Egreso); // Relación * a 1 entre Egreso y Cuenta
-Egreso.belongsTo(Cuenta); // Un Egreso pertenece a una Cuenta
+Cuenta.hasMany(Egreso, { onDelete: 'CASCADE' }); // Relación * a 1 entre Egreso y Cuenta
+Egreso.belongsTo(Cuenta, { onDelete: 'CASCADE' }); // Un Egreso pertenece a una Cuenta
 
 Prestario.hasMany(Prestamo); // Relación 1 a * entre Prestario y Prestamo
 Prestamo.belongsTo(Prestario); // Un Prestamo pertenece a un Prestario
