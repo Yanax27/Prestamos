@@ -19,7 +19,7 @@ import Perfil from "./Paginas/Perfil";
 import IngresoEgreso from "./Paginas/IngresoEgreso";
 import { Toaster } from "react-hot-toast";
 import { DataContext } from "./context/Provider";
-import config from "./config";
+import config from "./config";  
 import { Dashboard } from "./layouts/Dashboard";
 import { TableIngresos } from "./components/TableIngresos";
 import { TableEgresos } from "./components/TableEgresos";

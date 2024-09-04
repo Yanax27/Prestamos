@@ -25,6 +25,7 @@ export const DataContextProvider = ({ children }) => {
   };
 
   const evaluateAuth = async () => {
+    
     const token = Cookies.get("jwt");
     if (token) {
       setIsLoggedIn(true);

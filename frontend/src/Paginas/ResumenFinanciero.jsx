@@ -112,9 +112,11 @@ const ResumenFinanciero = () => {
             );
           })}
         </div>
+        <div>
+        </div>
         <div className="col-span-2 "></div>
         <div className="col-span-4 "></div>
-      </div> 
+      </div>
     );
   };
 
