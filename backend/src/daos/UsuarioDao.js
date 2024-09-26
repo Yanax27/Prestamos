@@ -26,6 +26,7 @@ class UsuarioDao {
     async createUsuario(usuarioData, UsuarioModel) {
         return await UsuarioModel.create(usuarioData);
     }
+
     async getUsuarioByEmail(email, UsuarioModel) {
         return await UsuarioModel.findOne({
             where: { email },

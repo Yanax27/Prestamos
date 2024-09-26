@@ -71,6 +71,7 @@ class UsuarioController {
   // Cerrar sesión (opcional)
   logout = catchedAsync(async (req, res) => {
     res.clearCookie('jwt');
+
     return response(res, 200, { message: 'Logout exitoso' });
   });
 

@@ -50,15 +50,16 @@ const {
   Prestamo,
   Prestario,
   Roles,
-  Usuario
+  Usuario,
+  RolUsuario
 } = sequelize.models;
 
 // Definir relaciones
 Usuario.hasOne(Cuenta); // Relación 1 a 1 entre Usuario y Cuenta
 Cuenta.belongsTo(Usuario); // La Cuenta pertenece a un Usuario
 
-Roles.hasOne(Usuario); // El Rol pertenece a un Usuario
-Usuario.belongsTo(Roles); // Relación 1 a 1 entre Usuario y Rolp
+Roles.belongsToMany(Usuario, { through: RolUsuario }); // El Rol pertenece a un Usuario
+Usuario.belongsToMany(Roles, { through: RolUsuario }); // Relación N a N entre Usuario y Rolp
 
 Prestamo.belongsTo(Usuario); // Relación 1 a * entre Usuario y Prestamo
 Usuario.hasMany(Prestamo); // Un Usuario puede tener varios Prestamos
@@ -76,7 +77,7 @@ Prestario.hasMany(Prestamo); // Relación 1 a * entre Prestario y Prestamo
 Prestamo.belongsTo(Prestario); // Un Prestamo pertenece a un Prestario
 
 module.exports = {
-  // para poder importar los modelos así: const { Product, User } = require('./db.js');
+  //para poder importar los modelos así: const { Product, User } = require('./db.js');
   ...sequelize.models,
   conn: sequelize, // para importar la conexión { conn } = require('./db.js');
 };
