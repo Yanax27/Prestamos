@@ -1,23 +1,36 @@
-const usuarioService = require('../services/usuario.service'); // Asegúrate de importar el servicio correcto
+const usuarioService = require('../services/usuario.service');
 const resError = require('../utils/resError');
-const { Usuario } = require("../db");
+const { Usuario, Roles } = require("../db");
 
-const roleMiddleware = (requiredRole) => {
+const roleMiddleware = (requiredRoles) => {
+  // Convertimos requiredRoles a un array si no lo es
+  const roles = Array.isArray(requiredRoles) ? requiredRoles : [requiredRoles];
+
   return async (req, res, next) => {
     try {
       const email = req.user.email; // obtener el email del token decodificado
-      const usuario = await usuarioService.getUsuarioByEmail(email, Usuario); // obtener el usuario
+      const usuario = await usuarioService.getUsuarioByEmail(email, Usuario, Roles);
 
       if (!usuario) {
         return resError(res, 404, 'Usuario no encontrado');
       }
 
-      if (usuario.Role.tipo !== requiredRole) { // Verificamos el rol si es diferente  de admin etnocen no tiene permiso
+      // Obtenemos los tipos de roles del usuario
+      const userRoles = usuario.Roles.map(role => role.tipo);
+
+      // Verificamos si el usuario tiene al menos uno de los roles requeridos
+      const hasRequiredRole = roles.some(role => userRoles.includes(role));
+
+      if (!hasRequiredRole) {
         return resError(res, 403, 'No tienes permiso para realizar esta acción');
       }
-      req.user;
+
+      // Añadimos los roles del usuario a req.user para uso posterior si es necesario
+      req.user.roles = userRoles;
+
       next();
     } catch (error) {
+      console.error('Error en roleMiddleware:', error);
       return resError(res, 500, 'Error de servidor');
     }
   };
