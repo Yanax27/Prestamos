@@ -10,6 +10,6 @@ router.post('/logout', usuarioController.logout);
 router.post('/', /*authMiddleware, roleMiddleware('admin'),*/usuarioController.createUsuario);
 router.get('/:id', authMiddleware, roleMiddleware('admin'),usuarioController.getUsuariobyId);
 router.patch('/:id', authMiddleware, roleMiddleware('admin'), usuarioController.updateUsuario);
-router.delete('/:id', authMiddleware, roleMiddleware('admin'), usuarioController.deleteUsuario);
+router.delete('/:id', /*authMiddleware, roleMiddleware('admin'),*/ usuarioController.deleteUsuario);
 
 module.exports = router;
