@@ -55,8 +55,8 @@ const {
 } = sequelize.models;
 
 // Definir relaciones
-Usuario.hasOne(Cuenta); // Relación 1 a 1 entre Usuario y Cuenta
-Cuenta.belongsTo(Usuario); // La Cuenta pertenece a un Usuario
+Cuenta.hasMany(Usuario); // Relación entre Usuario * --- 1 Cuenta
+Usuario.belongsTo(Cuenta); // La Cuenta pertenece a un Usuario
 
 Roles.belongsToMany(Usuario, { through: RolUsuario }); // El Rol pertenece a un Usuario
 Usuario.belongsToMany(Roles, { through: RolUsuario }); // Relación N a N entre Usuario y Rolp
