@@ -1,7 +1,7 @@
 const response = require('../utils/response');
 const resError = require('../utils/resError');
 const catchedAsync = require('../utils/catchedAsync');
-const { Usuario } = require("../db");
+const { Usuario, Roles } = require("../db");
 const usuarioService = require('../services/usuario.service');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -11,14 +11,14 @@ const { JWT_SECRET, JWT_EXPIRES_IN } = process.env;
 class UsuarioController {
   // obtener todos los usuarios
   getAllUsuarios = catchedAsync(async (req, res) => {
-    const usuarios = await usuarioService.getAllUsuarios(Usuario);
+    const usuarios = await usuarioService.getAllUsuarios(Usuario, Roles);
     return response(res, 200, usuarios);
   });
 
   //obtenemmos por id
   getUsuariobyId = catchedAsync(async (req, res) => {
     const { id } = req.params;
-    const usuario = await usuarioService.getUsuarioById(id, Usuario);
+    const usuario = await usuarioService.getUsuarioById(id, Usuario, Roles);
     if (!usuario) {
       return resError(res, 404, "Usuario not found");
     }
@@ -27,21 +27,23 @@ class UsuarioController {
 
   //crear usuario
   createUsuario = catchedAsync(async (req, res) => {
-    const { password, ...usuarioData } = req.body;
-    // Hasheamos la contraseña
+    const { password, roles, ...usuarioData } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    const usuario = await usuarioService.createUsuario({ ...usuarioData, password: hashedPassword }, Usuario);
+    const usuario = await usuarioService.createUsuario(
+        { ...usuarioData, password: hashedPassword, roles },
+        Usuario,
+        Roles
+    );
     return response(res, 201, usuario);
-  });
+});
 
   // Iniciar sesión
   login = catchedAsync(async (req, res) => {
     const { email, password } = req.body;
 
     // Verificamos si el usuario existe
-    const usuario = await usuarioService.getUsuarioByEmail(email, Usuario);
-    console.log(usuario.Role.tipo)
+    const usuario = await usuarioService.getUsuarioByEmail(email, Usuario, Roles);
+//    console.log(usuario.Role.tipo)
     if (!usuario) {
       return resError(res, 404, 'Usuario no encontrado');
     }
@@ -71,6 +73,7 @@ class UsuarioController {
   // Cerrar sesión (opcional)
   logout = catchedAsync(async (req, res) => {
     res.clearCookie('jwt');
+
     return response(res, 200, { message: 'Logout exitoso' });
   });
 
@@ -79,7 +82,7 @@ class UsuarioController {
 
     const { id } = req.params;
     const usuariosData = req.body;
-    const updateUsuario = await usuarioService.updateUsuario(id, usuariosData, Usuario)
+    const updateUsuario = await usuarioService.updateUsuario(id, usuariosData, Usuario, Roles)
     if (!updateUsuario) {
       return resError(res, 404, "Usuario not found")
     }
