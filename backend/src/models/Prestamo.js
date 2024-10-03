@@ -13,7 +13,7 @@ module.exports = (sequelize) => {
         allowNull:true
     },
     monto:{
-        type:DataTypes.BOOLEAN,
+        type:DataTypes.DOUBLE,
         allowNull:true
     },
     interes:{
