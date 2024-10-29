@@ -82,7 +82,7 @@ const DetalleCliente = () => {
             <p className="text-gray-500">Estado: {clienteData.estado}</p>
           </>
         ) : (
-          <Cuentas clienteId={clienteId} />
+          <Cuentas idPrestario={clienteData.id_prestario} />
         )}
       </div>
       <div className="p-4 border-t mx-8 mt-1"></div>

@@ -16,7 +16,7 @@ const Clientes = () => {
       try {
         const data = await fetchGetAllPrestarios(); 
         setDatos(data);
-        console.log(datos)
+        //console.log(datos)
         setLoading(false);
       } catch (error) {
         console.error("Error fetching prestarios:", error);
