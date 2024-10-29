@@ -2,24 +2,24 @@ const prestarioService = require('../services/prestario.service');
 const response  = require('../utils/response');
 const resError  = require('../utils/resError');
 const catchedAsync = require('../utils/catchedAsync');
-const { Prestario } = require('../db'); // Importamos el modelo 
+const { Prestario } = require('../db'); // Importamos el modelo
 
 
 class PrestarioController {
   // Obtener todos los prestarios
   createPrestario = catchedAsync(async (req, res) => {
     const prestarioData = { ...req.body };
-    
+
     // Pasamos el modelo de Prestario al servicio
     const prestario = await prestarioService.createPrestario(prestarioData, Prestario);
-    
+
     return response(res, 201, prestario);
   });
 
   getAllPrestarios = catchedAsync(async (req, res) => {
     // Pasamos el modelo de Prestario al servicio
     const prestarios = await prestarioService.getAllPrestarios(Prestario);
-    
+
     return response(res, 200, prestarios);
   });
 
@@ -28,7 +28,7 @@ class PrestarioController {
 
     // Pasamos el modelo de Prestario al servicio
     const prestario = await prestarioService.getPrestarioById(id, Prestario);
-    
+
     if (!prestario) {
       return resError(res, 404, "Prestario not found");
     }
