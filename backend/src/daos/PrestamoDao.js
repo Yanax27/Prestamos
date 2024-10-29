@@ -3,23 +3,23 @@ const { Op } = require('sequelize');
 class PrestamoDao {
   //obtener todos los Prestamos
   async getAllPrestamos(PrestamoModel, filter) {
-    //console.log(filter)
+    // Configuración para el filtro del usuario
     const queryfilterUsuario = {
       association: 'Usuario',
       attributes: ['nombre', 'email'],
     };
+
+    // Aplicar filtro por nombre
     if (filter.nombre) {
       queryfilterUsuario.where = { nombre: filter.nombre };
     }
-    // console.log(queryfilterUsuario)
+
     // Si hay un filtro para 'email'
     if (filter.email) {
-      console.log(queryfilterUsuario);
       if (filter.nombre) {
-        console.log(queryfilterUsuario);
-        // Si ya existe un filtro para 'nombre', combinarlo con 'email' usando Op.and
+        // Si existe un filtro para 'nombre', combinarlo con 'email' usando Op.and o Op.or
         queryfilterUsuario.where = {
-          [filter.operador == 'or' ? Op.or : Op.and]: [
+          [filter.operador === 'or' ? Op.or : Op.and]: [
             { nombre: filter.nombre },
             { email: filter.email },
           ],
@@ -27,16 +27,25 @@ class PrestamoDao {
       } else {
         // Si solo hay un filtro para 'email'
         queryfilterUsuario.where = { email: filter.email };
-        // console.log(queryfilterUsuario)
       }
     }
-    //console.log(queryfilterUsuario)
+
+    // Configuración para el filtro del prestario
+    const queryfilterPrestario = {
+      association: 'Prestario',
+      attributes: ['nombre', 'negocio', 'telefono'],
+    };
+
+    // Si hay un filtro para 'idPrestario'
+    console.log("filtro prestario", filter.idPrestario)
+    if (filter.idPrestario) {
+      queryfilterPrestario.where = { id_prestario: filter.idPrestario };
+    }
+
+    // Consulta para obtener todos los préstamos con los filtros
     return await PrestamoModel.findAll({
       include: [
-        {
-          association: 'Prestario',
-          attributes: ['nombre', 'negocio', 'telefono'],
-        },
+        queryfilterPrestario,
         queryfilterUsuario,
       ],
     });
@@ -50,6 +59,10 @@ class PrestamoDao {
   async getPrestamoById(id, PrestamoModel) {
     return await PrestamoModel.findByPk(id);
   }
+    // Obtener un prestamo por ClienteID
+    async getPrestamoByClienteId(PrestarioIdPrestario, PrestamoModel) {
+      return await PrestamoModel.findByPk(PrestarioIdPrestario);
+    }
   // Actualizar un prestario
   async updatePrestamo(id, prestamoData, PrestamoModel) {
     const prestamo = await PrestamoModel.findByPk(id);

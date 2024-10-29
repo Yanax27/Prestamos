@@ -30,7 +30,7 @@ class CuentaDao {
     await cuenta.destroy();
     return cuenta;
   }
-  //suma los montos de ingreso hecho a la cuenta
+  //suma los montos de ingresos hecho a la cuenta
   async sumarMontoACuenta(id_cuenta, monto, CuentaModel) {
     const cuenta = await CuentaModel.findByPk(id_cuenta);
     if (!cuenta) {
@@ -39,9 +39,9 @@ class CuentaDao {
 
     cuenta.capital += monto;
     cuenta.cajaActual += monto;
+    cuenta.ventas -= monto;
 
     await cuenta.save();
-
     return cuenta;
   }
   //resta el monto de un egreso a la cuenta
@@ -53,6 +53,7 @@ class CuentaDao {
 
     cuenta.capital =cuenta.capital - monto;
     cuenta.cajaActual =cuenta.cajaActual - monto;
+    cuenta.ventas = monto;
 
     await cuenta.save();
 
