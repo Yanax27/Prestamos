@@ -43,6 +43,16 @@ module.exports = (sequelize) => {
     deudaActual:{
         type:DataTypes.DOUBLE,
         allowNull:true
+    },
+    saldoAbono: {
+      type: DataTypes.DOUBLE,
+      allowNull: false,
+      defaultValue: 0
+    },
+    cuotasPagadas: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
     }
   });
 };
