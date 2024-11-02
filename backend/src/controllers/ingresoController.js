@@ -18,8 +18,9 @@ class IngresoController {
   });
 
   getAllIngresos = catchedAsync(async (req, res) => {
-    // Pasamos el modelo de ingreso al servicio
-    const ingresos = await ingresoService.getAllIngresos(Ingreso);
+    const filter = { CuentumIdCuenta: req.query.CuentumIdCuenta };
+    // Pasamos el filtro y el modelo de ingreso al servicio
+    const ingresos = await ingresoService.getAllIngresos(Ingreso, filter);
 
     return response(res, 200, ingresos);
   });

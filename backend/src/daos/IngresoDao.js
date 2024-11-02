@@ -1,7 +1,11 @@
 class IngresoDao{
-  // Obtener todos los ingreso
-  async getAllIngreso(IngresoModel) {
-    return await IngresoModel.findAll();
+  // Obtener todos los ingresos con posible filtro por CuentumIdCuenta
+  async getAllIngreso(IngresoModel, filter) {
+    const query = filter.CuentumIdCuenta
+      ? { where: { CuentumIdCuenta: filter.CuentumIdCuenta } }
+      : {};
+
+    return await IngresoModel.findAll(query);
   }
 
   // Crear un nuevo ingreso
