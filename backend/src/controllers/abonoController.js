@@ -1,17 +1,18 @@
 const response  = require('../utils/response');
 const resError  = require('../utils/resError');
 const catchedAsync = require('../utils/catchedAsync');
-const { Abono } = require('../db'); // Importamos el modelo
+const { Abono, Prestamo} = require('../db'); // Importamos el modelo
 const abonoService = require('../services/abono.service');
 
 
-class AbonooController {
+
+class AbonoController {
   // Obtener todos los prestarios
   createAbono = catchedAsync(async (req, res) => {
     const abonoData = { ...req.body };
 
     // Pasamos el modelo de Prestario al servicio
-    const abono = await abonoService.createAbono(abonoData, Abono);
+    const abono = await abonoService.createAbono(abonoData, Prestamo, Abono);
 
     return response(res, 201, abono);
   });
@@ -56,6 +57,6 @@ class AbonooController {
   });
 }
 
-module.exports = new AbonooController();
+module.exports = new AbonoController();
 
 

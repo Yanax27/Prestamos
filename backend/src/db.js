@@ -64,7 +64,7 @@ Usuario.belongsToMany(Roles, { through: RolUsuario }); // Relación N a N entre 
 Prestamo.belongsTo(Usuario); // Relación 1 a * entre Usuario y Prestamo
 Usuario.hasMany(Prestamo); // Un Usuario puede tener varios Prestamos
 
-Abono.belongsTo(Prestamo); // Relación * a 1 entre Abono y Prestamo
+Abono.belongsTo(Prestamo, { onDelete: 'CASCADE' }); // Relación * a 1 entre Abono y Prestamo
 Prestamo.hasMany(Abono); // Un Prestamo puede tener varios Abonos
 
 Cuenta.hasMany(Ingreso, { onDelete: 'CASCADE' }); // Relación * a 1 entre Ingreso y Cuenta
