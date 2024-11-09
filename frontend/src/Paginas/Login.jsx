@@ -2,17 +2,17 @@ import React, { useContext, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
-import { loginUser } from "../http/fetchPost"; // Importar la función para llamar a tu backend
+import { loginUser } from "../http/fetchPost";
 import "../styles/Login.css";
 import { DataContext } from "../context/Provider";
 import toast from "react-hot-toast";
-import { useForm } from "react-hook-form"; // Librería para manejar formularios
+import { useForm } from "react-hook-form";
 import { Alert } from "@mui/material";
 import Cookies from "js-cookie";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { authUser, setDataAuth, setIsLoggedIn, setValidToken } = useContext(DataContext);
+  const { setIsLoggedIn, setValidToken } = useContext(DataContext);
   const [showPassword, setShowPassword] = useState(false);
   const [button, setButton] = useState(false);
 
@@ -20,7 +20,6 @@ const Login = () => {
     register,
     handleSubmit,
     formState: { errors },
-    watch
   } = useForm({ mode: "onChange" });
 
   const iniciarSesion = async (data) => {
@@ -28,21 +27,21 @@ const Login = () => {
     try {
       const response = await loginUser(data);
 
-      if (response.error) {// Mostrar el mensaje de error en el estado
-        alert(response.message);
+      if (response.error) {
         toast.error(response.message);
       } else {
-        const token = response.data.data.token; // token según tu respuesta del backend
-        Cookies.set('jwt', token, { expires: 7 }); //7 dias
+        const token = response.data.data.token;
+        Cookies.set("jwt", token, { expires: 7 });
         setIsLoggedIn(true);
         setValidToken(true);
-        alert(response.data.data.message); //respuesta del backend
+
+        // Guardar el correo en el localStorage
+        localStorage.setItem("userEmail", data.email);
+
         toast.success("Inicio de sesión exitoso");
         navigate("/dashboard");
       }
     } catch (error) {
-      // Mostrar un error general
-      setLoginError("Error al iniciar sesión. Verifica tus credenciales.");
       toast.error("Error al iniciar sesión");
     } finally {
       setButton(false);
@@ -88,7 +87,7 @@ const Login = () => {
                     },
                   })}
                 />
-                {errors.correo && <Alert severity="error">{errors.correo.message}</Alert>}
+                {errors.email && <Alert severity="error">{errors.email.message}</Alert>}
               </div>
               <div>
                 <label
@@ -117,7 +116,7 @@ const Login = () => {
                   </span>
                 </div>
               </div>
-              {errors.contraseña && <Alert severity="error">{errors.contraseña.message}</Alert>}
+              {errors.password && <Alert severity="error">{errors.password.message}</Alert>}
               <div className="flex items-center justify-between">
                 <a
                   href="#"
