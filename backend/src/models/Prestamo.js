@@ -25,7 +25,7 @@ module.exports = (sequelize) => {
         allowNull:true
     },
     valorCuota:{
-        type:DataTypes.INTEGER,
+        type:DataTypes.DOUBLE,
         allowNull:true
     },
     tipoCuota:{

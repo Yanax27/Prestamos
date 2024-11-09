@@ -9,38 +9,38 @@ class PrestamoService {
     return await prestamoDao.getAllPrestamos(PrestamoModel, filter);
   }
 
-// Crear préstamo y actualizar cuenta
-async createPrestamo(prestamoData, PrestamoModel, CuentaModel, UsuarioModel, RoleModel) {
-  if (!prestamoData) {
-    throw new ClientError('Prestamo data is required', 400);
+  // Crear préstamo y actualizar cuenta
+  async createPrestamo(prestamoData, PrestamoModel, CuentaModel, UsuarioModel, RoleModel) {
+    if (!prestamoData) {
+      throw new ClientError('Prestamo data is required', 400);
+    }
+
+    // Crear el préstamo
+    const prestamo = await prestamoDao.createPrestamo(prestamoData, PrestamoModel);
+
+    // Obtener el usuario por el ID asociado en el prestamoData
+    const usuario = await usuarioDao.getUsuarioById(prestamoData.UsuarioIdUsuario, UsuarioModel, RoleModel); // Asumimos que el prestamoData incluye UsuarioId
+
+    if (!usuario) {
+      throw new ClientError('Usuario not found', 404);
+    }
+
+    // Obtener el ID de la cuenta del usuario
+    const cuentaId = usuario.CuentumIdCuenta; // Asegúrate de que este campo refleje la relación correcta en tu modelo
+    if (!cuentaId) {
+      throw new ClientError('No account associated with this user', 400);
+    }
+
+    // Restar el monto del préstamo al capital de la cuenta del usuario
+    const cuenta = await cuentaDao.getCuentaById(cuentaId, CuentaModel);
+    if (!cuenta) {
+      throw new ClientError('Cuenta not found', 404);
+    }
+
+    await cuentaDao.restarMontoACuenta(cuenta.id_cuenta, prestamoData.monto, CuentaModel);
+
+    return prestamo;
   }
-
-  // Crear el préstamo
-  const prestamo = await prestamoDao.createPrestamo(prestamoData, PrestamoModel);
-
-  // Obtener el usuario por el ID asociado en el prestamoData
-  const usuario = await usuarioDao.getUsuarioById(prestamoData.UsuarioIdUsuario, UsuarioModel, RoleModel); // Asumimos que el prestamoData incluye UsuarioId
-
-  if (!usuario) {
-    throw new ClientError('Usuario not found', 404);
-  }
-
-  // Obtener el ID de la cuenta del usuario
-  const cuentaId = usuario.CuentumIdCuenta; // Asegúrate de que este campo refleje la relación correcta en tu modelo
-  if (!cuentaId) {
-    throw new ClientError('No account associated with this user', 400);
-  }
-
-  // Restar el monto del préstamo al capital de la cuenta del usuario
-  const cuenta = await cuentaDao.getCuentaById(cuentaId, CuentaModel);
-  if (!cuenta) {
-    throw new ClientError('Cuenta not found', 404);
-  }
-
-  await cuentaDao.restarMontoACuenta(cuenta.id_cuenta, prestamoData.monto, CuentaModel);
-
-  return prestamo;
-}
 
   async getPrestamoById(id, PrestamoModel) {
     return await prestamoDao.getPrestamoById(id, PrestamoModel);
@@ -62,7 +62,8 @@ async createPrestamo(prestamoData, PrestamoModel, CuentaModel, UsuarioModel, Rol
     }
 
     // Obtener el usuario asociado al préstamo
-    const usuario = await usuarioDao.getUsuarioById(prestamo.UsuarioIdUsuario, UsuarioModel, RoleModel);
+    console.log(prestamo)
+    const usuario = await usuarioDao.getUsuarioById(prestamo.UsuarioIdUsuario, UsuarioModel);
     if (!usuario) {
       throw new ClientError("Usuario not found", 404);
     }
@@ -81,7 +82,36 @@ async createPrestamo(prestamoData, PrestamoModel, CuentaModel, UsuarioModel, Rol
 
     return prestamo;
   }
+
+  async updateEstadosCuotasMasivo(prestamoId, cuotas, nuevoEstado, PrestamoModel) {
+    // Obtener el préstamo
+    const prestamo = await prestamoDao.getPrestamoById(prestamoId, PrestamoModel);
+    if (!prestamo) {
+      throw new ClientError("Préstamo no encontrado", 404);
+    }
+console.log("datos:",prestamoId, cuotas, nuevoEstado)
+    let cuotasPagadas = prestamo.cuotasPagadas;
+    let deudaActual = prestamo.deudaActual;
+    const valorCuota = prestamo.valorCuota;
+    const verificarPagoActualizado = [...prestamo.verificarPago];
+
+    // Cambiar el estado de las cuotas seleccionadas
+    cuotas.forEach((indice) => {
+      if (nuevoEstado === "pagado" && verificarPagoActualizado[indice] !== "pagado") {
+        cuotasPagadas += 1;
+        deudaActual -= valorCuota;
+      }
+      verificarPagoActualizado[indice] = nuevoEstado;
+    });
+
+    // Actualizar el préstamo con el nuevo estado de las cuotas y los campos `deudaActual` y `cuotasPagadas`
+    await prestamo.update({
+      verificarPago: verificarPagoActualizado,
+      cuotasPagadas,
+      deudaActual,
+    });
+
+    return prestamo;
+  }
 }
-
-
 module.exports = new PrestamoService();

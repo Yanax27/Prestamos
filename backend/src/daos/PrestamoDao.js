@@ -59,10 +59,6 @@ class PrestamoDao {
   async getPrestamoById(id, PrestamoModel) {
     return await PrestamoModel.findByPk(id);
   }
-    // Obtener un prestamo por ClienteID
-    async getPrestamoByClienteId(PrestarioIdPrestario, PrestamoModel) {
-      return await PrestamoModel.findByPk(PrestarioIdPrestario);
-    }
   // Actualizar un prestario
   async updatePrestamo(id, prestamoData, PrestamoModel) {
     const prestamo = await PrestamoModel.findByPk(id);
