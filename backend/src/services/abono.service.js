@@ -27,7 +27,7 @@ class AbonoService {
       // Cambia el último valor "pendiente" a "pagada" en verificarPago
       for (let i = verificarPagoActualizado.length - 1; i >= 0; i--) {
         if (verificarPagoActualizado[i] === "pendiente") {
-          verificarPagoActualizado[i] = "pagada";
+          verificarPagoActualizado[i] = "pagoAbono";
           break; // Solo cambia el último "pendiente"
         }
       }

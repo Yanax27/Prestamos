@@ -2,9 +2,10 @@ const { ClientError } = require('../utils/errors');
 const usuarioDao = require('../daos/UsuarioDao');
 
 class UsuarioService {
-    async getAllUsuarios(UsuarioModel, RoleModel) {
-        return await usuarioDao.getAllUsuarios(UsuarioModel, RoleModel);
-    }
+  async getAllUsuarios(UsuarioModel, RoleModel, filter = {}) {
+    // Pasar el filtro al DAO para aplicarlo en la consulta
+    return await usuarioDao.getAllUsuarios(UsuarioModel, RoleModel, filter);
+}
 
     async getUsuarioById(id, UsuarioModel, RoleModel) {
         return await usuarioDao.getUsuarioById(id, UsuarioModel, RoleModel);
