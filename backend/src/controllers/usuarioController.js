@@ -7,15 +7,17 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET, JWT_EXPIRES_IN } = process.env;
 
-
 class UsuarioController {
-  // obtener todos los usuarios
+  // Obtener todos los usuarios
   getAllUsuarios = catchedAsync(async (req, res) => {
-    const usuarios = await usuarioService.getAllUsuarios(Usuario, Roles);
+    const { email } = req.query;
+    const filter = { email };
+
+    const usuarios = await usuarioService.getAllUsuarios(Usuario, Roles, filter);
     return response(res, 200, usuarios);
   });
 
-  //obtenemmos por id
+  // Obtener usuario por ID
   getUsuariobyId = catchedAsync(async (req, res) => {
     const { id } = req.params;
     const usuario = await usuarioService.getUsuarioById(id, Usuario, Roles);
@@ -25,71 +27,85 @@ class UsuarioController {
     return response(res, 200, usuario);
   });
 
-  //crear usuario
+  // Crear usuario
   createUsuario = catchedAsync(async (req, res) => {
     const { password, roles, ...usuarioData } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
     const usuario = await usuarioService.createUsuario(
-        { ...usuarioData, password: hashedPassword, roles },
-        Usuario,
-        Roles
+      { ...usuarioData, password: hashedPassword, roles },
+      Usuario,
+      Roles
     );
     return response(res, 201, usuario);
-});
+  });
 
   // Iniciar sesión
   login = catchedAsync(async (req, res) => {
     const { email, password } = req.body;
 
-    // Verificamos si el usuario existe
+    // Verificar si el usuario existe
     const usuario = await usuarioService.getUsuarioByEmail(email, Usuario, Roles);
-//    console.log(usuario.Role.tipo)
     if (!usuario) {
       return resError(res, 404, 'Usuario no encontrado');
     }
 
-    // Verificamos si la contraseña es correcta
+    // Verificar si la contraseña es correcta
     const isMatch = await bcrypt.compare(password, usuario.password);
     if (!isMatch) {
       return resError(res, 401, 'Contraseña incorrecta');
     }
 
-    // Creamos el token JWT
-    const token = jwt.sign({ id: usuario.id, email: usuario.email }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+    // Obtener los roles del usuario
+    const roles = usuario.Roles.map(role => role.tipo);
 
-    // Establecemos el token en una cookie
+    // Crear el token JWT
+    const token = jwt.sign(
+      { id_usuario: usuario.id_usuario, email: usuario.email, roles },
+      JWT_SECRET,
+      { expiresIn: JWT_EXPIRES_IN }
+    );
+
+    // Establecer el token en una cookie
     res.cookie('jwt', token, {
-      httpOnly: true,     // Para que la cookie no sea accesible desde JavaScript en el frontend
-      secure: false,      // Cambia a 'true' si estás utilizando HTTPS
-      sameSite: 'lax',    // Evitar CSRF, puede ser 'lax', 'strict' o 'none'
-      domain: 'localhost',// Asegúrate de que coincida con el dominio
-      path: '/',          // La ruta donde será accesible la cookie
-     // maxAge: 24 * 60 * 60 * 1000 // Expiración en 24 horas
+      httpOnly: true,
+      secure: false, // Cambiar a 'true' si estás utilizando HTTPS
+      sameSite: 'lax',
+      domain: 'localhost',
+      path: '/',
+      expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
     });
 
-    return response(res, 200, { message: 'Login exitoso', token });
+    // Enviar respuesta con el token y datos del usuario
+    return response(res, 200, {
+      message: 'Login exitoso',
+      token,
+      userLogin: {
+        id_usuario: usuario.id_usuario,
+        email: usuario.email,
+        roles,
+      },
+    });
   });
 
-  // Cerrar sesión (opcional)
+  // Cerrar sesión
   logout = catchedAsync(async (req, res) => {
     res.clearCookie('jwt');
 
     return response(res, 200, { message: 'Logout exitoso' });
   });
 
-  //actualizar usuario usuando id
+  // Actualizar usuario usando ID
   updateUsuario = catchedAsync(async (req, res) => {
-
     const { id } = req.params;
     const usuariosData = req.body;
-    const updateUsuario = await usuarioService.updateUsuario(id, usuariosData, Usuario, Roles)
+    const updateUsuario = await usuarioService.updateUsuario(id, usuariosData, Usuario, Roles);
     if (!updateUsuario) {
-      return resError(res, 404, "Usuario not found")
+      return resError(res, 404, "Usuario not found");
     }
     return response(res, 200, updateUsuario);
   });
 
-  //eliminar suuario por id
+  // Eliminar usuario por ID
   deleteUsuario = catchedAsync(async (req, res) => {
     const { id } = req.params;
     const deletedUsuario = await usuarioService.deleteUsuario(id, Usuario);
@@ -97,7 +113,7 @@ class UsuarioController {
       return resError(res, 404, "Usuario not found");
     }
     response(res, 204, null);
-  })
-
+  });
 }
+
 module.exports = new UsuarioController();
