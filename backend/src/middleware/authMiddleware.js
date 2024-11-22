@@ -4,19 +4,19 @@ const { JWT_SECRET } = process.env;
 
 const authMiddleware = (req, res, next) => {
   const token = req.cookies?.jwt;
-  console.log(token)
   if (!token) {
     return resError(res, 401, 'No autenticado');
   }
 
   jwt.verify(token, JWT_SECRET, (err, decoded) => {
-    if (err) {
+    if (err || !decoded.id_usuario || !decoded.email || !decoded.roles) {
       return resError(res, 401, 'Token inválido');
     }
 
-    req.user = decoded; // Añadimos los datos del usuario decodificados al request
+    req.user = decoded; // Pasamos toda la información decodificada al request
     next();
   });
 };
 
 module.exports = authMiddleware;
+
