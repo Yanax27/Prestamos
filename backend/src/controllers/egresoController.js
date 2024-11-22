@@ -1,53 +1,48 @@
-const response  = require('../utils/response');
-const resError  = require('../utils/resError');
+const response = require('../utils/response');
+const resError = require('../utils/resError');
 const catchedAsync = require('../utils/catchedAsync');
 const { Egreso } = require('../db'); // Importamos el modelo
 const { Cuenta } = require('../db'); // Importamos el modelo
 const egresoService = require('../services/egreso.service');
 
-
 class EgresoController {
-  // Obtener todos los prestarios
+  // Crear un nuevo egreso
   createEgreso = catchedAsync(async (req, res) => {
     const egresoData = { ...req.body };
-    // Pasamos el modelo de Prestario al servicio
     const egreso = await egresoService.createEgreso(egresoData, Egreso, Cuenta);
-
     return response(res, 201, egreso);
   });
 
+  // Obtener todos los egresos con filtro opcional de CuentumIdCuenta
   getAllEgresos = catchedAsync(async (req, res) => {
-    // Pasamos el modelo de Prestario al servicio
-    const egresos = await egresoService.getAllEgresos(Egreso);
-
+    const { cuentaId } = req.query; // Obtener el filtro de la consulta
+    const egresos = await egresoService.getAllEgresos(Egreso, cuentaId);
     return response(res, 200, egresos);
   });
 
   getEgresoById = catchedAsync(async (req, res) => {
     const { id } = req.params;
-    // Pasamos el modelo de Prestario al servicio
     const egreso = await egresoService.getEgresoById(id, Egreso);
     if (!egreso) {
       return resError(res, 404, "Egreso not found");
     }
-
     return response(res, 200, egreso);
   });
+
   // Actualizar un egreso
   updateEgreso = catchedAsync(async (req, res) => {
     const { id } = req.params;
     const egresoData = req.body;
-    const updateEgreso = await egresoService.updateEgreso(id, egresoData, Egreso);
-    if (!updateEgreso) {
+    const updatedEgreso = await egresoService.updateEgreso(id, egresoData, Egreso);
+    if (!updatedEgreso) {
       return resError(res, 404, "Egreso not found");
     }
-    response(res, 200, updateEgreso);
+    response(res, 200, updatedEgreso);
   });
 
-  // Eliminar un prestario
+  // Eliminar un egreso
   deleteEgreso = catchedAsync(async (req, res) => {
     const { id } = req.params;
-    //console.log("id prestario",id)
     const deletedEgreso = await egresoService.deleteEgreso(id, Egreso);
     if (!deletedEgreso) {
       return resError(res, 404, "Egreso not found");
@@ -57,5 +52,3 @@ class EgresoController {
 }
 
 module.exports = new EgresoController();
-
-
