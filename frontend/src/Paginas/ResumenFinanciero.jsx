@@ -1,10 +1,8 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { Spinner } from "../components/Spinner";
-import { DataContext } from "../context/Provider";
-import config from "../config";
 import { fetchGetAllUsuarios } from "../http/fetchUsuario";
 import { fetchGetCuentaById } from "../http/fetchCuenta";
-import CardDataCuenta from "../components/CardDataCuenta"; // Asegúrate de que este componente esté adaptado para usar las props correctamente.
+import CardDataCuenta from "../components/CardDataCuenta";
 
 const BancoImagenes = [
   "https://i.ibb.co/MRyknnn/Capital.png",
@@ -33,7 +31,6 @@ const ResumenFinanciero = () => {
               { title: "Caja Actual", total: cuenta.cajaActual.toFixed(2), rate: "0.8%", levelUp: true },
               { title: "Ventas", total: cuenta.ventas.toFixed(2), rate: "1.2%", levelUp: true },
               { title: "Caja Ultima Liquidada", total: cuenta.cajaUltimaLiquidacion.toFixed(2), rate: "1.2%", levelUp: true },
-              // Agrega otros datos que necesites de `cuenta`
             ];
             setArrayData(newArrayData);
             setCuentaData(cuenta);
@@ -55,15 +52,14 @@ const ResumenFinanciero = () => {
   const renderResumenFinanciero = () => {
     if (loading) {
       return (
-        <div className="flex w-full justify-center items-center">
+        <div className="flex w-full justify-center items-center h-full">
           <Spinner />
         </div>
       );
     }
 
     return (
-      <>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-4">
         {arrayData.map((item, index) => (
           <CardDataCuenta
             key={index}
@@ -76,8 +72,6 @@ const ResumenFinanciero = () => {
           </CardDataCuenta>
         ))}
       </div>
-      </>
-      
     );
   };
 

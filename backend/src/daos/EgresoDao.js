@@ -1,7 +1,10 @@
+const { Op } = require('sequelize');
+
 class EgresoDao {
-  // Obtener todos los egreso
-  async getAllEgreso(EgresoModel) {
-    return await EgresoModel.findAll();
+  // Obtener todos los egresos con filtro opcional de cuenta
+  async getAllEgreso(EgresoModel, cuentaId) {
+    const query = cuentaId ? { CuentumIdCuenta: cuentaId } : {};
+    return await EgresoModel.findAll({ query });
   }
 
   // Crear un nuevo egreso
@@ -24,4 +27,3 @@ class EgresoDao {
 }
 
 module.exports = new EgresoDao();
-

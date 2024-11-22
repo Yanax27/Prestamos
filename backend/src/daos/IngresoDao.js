@@ -2,8 +2,7 @@ class IngresoDao{
   // Obtener todos los ingresos con posible filtro por CuentumIdCuenta
   async getAllIngreso(IngresoModel, filter) {
     const query = filter.CuentumIdCuenta
-      ? { where: { CuentumIdCuenta: filter.CuentumIdCuenta } }
-      : {};
+      ? { where: { CuentumIdCuenta: filter.CuentumIdCuenta } }: {};
 
     return await IngresoModel.findAll(query);
   }
