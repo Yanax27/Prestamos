@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Spinner } from "../components/Spinner";
-import { fetchGetAllUsuarios } from "../http/fetchUsuario";
-import { fetchGetCuentaById } from "../http/fetchCuenta";
+import { fetchAllUsuarios, fetchCuentaById } from "../redux-toolkit/actions/financieroActions";
 import CardDataCuenta from "../components/CardDataCuenta";
 
 const BancoImagenes = [
@@ -13,41 +13,23 @@ const BancoImagenes = [
 ];
 
 const ResumenFinanciero = () => {
-  const [cuentaData, setCuentaData] = useState({});
-  const [arrayData, setArrayData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [email, setEmail] = useState(localStorage.getItem('userEmail') || '');
+  const dispatch = useDispatch();
+  const { usuarios, cuenta, loading, error } = useSelector((state) => state.financiero); // Estado desde Redux
+  const email = useSelector((state) => state.auth.user?.email); // Obtener email del usuario autenticado
+  
+  useEffect(() => {
+    console.log("veces")
+    if (email) {
+      dispatch(fetchAllUsuarios(email));
+    }
+  }, [dispatch]);
 
   useEffect(() => {
-    const fetchCuentaData = async () => {
-      try {
-        setLoading(true);
-        const usuario = await fetchGetAllUsuarios(email);
-        if (usuario && usuario[0]) {
-          const cuenta = await fetchGetCuentaById(usuario[0].CuentumIdCuenta);
-          if (cuenta) {
-            const newArrayData = [
-              { title: "Capital", total: cuenta.capital.toFixed(2), rate: "0.5%", levelUp: true },
-              { title: "Caja Actual", total: cuenta.cajaActual.toFixed(2), rate: "0.8%", levelUp: true },
-              { title: "Ventas", total: cuenta.ventas.toFixed(2), rate: "1.2%", levelUp: true },
-              { title: "Caja Ultima Liquidada", total: cuenta.cajaUltimaLiquidacion.toFixed(2), rate: "1.2%", levelUp: true },
-            ];
-            setArrayData(newArrayData);
-            setCuentaData(cuenta);
-          } else {
-            console.log("No se encontró la cuenta del usuario");
-          }
-        } else {
-          console.log("Usuario no encontrado");
-        }
-      } catch (error) {
-        console.error("Error al obtener los datos de la cuenta: ", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchCuentaData();
-  }, [email]);
+    console.log("veces123")
+    if (usuarios?.length > 0 && usuarios[0].CuentumIdCuenta) {
+      dispatch(fetchCuentaById(usuarios[0].CuentumIdCuenta));
+    }
+  }, [dispatch, usuarios]);
 
   const renderResumenFinanciero = () => {
     if (loading) {
@@ -57,6 +39,29 @@ const ResumenFinanciero = () => {
         </div>
       );
     }
+
+    if (error) {
+      return (
+        <div className="flex w-full justify-center items-center h-full">
+          <p className="text-red-500">Error al cargar los datos: {error}</p>
+        </div>
+      );
+    }
+
+    if (!cuenta) {
+      return (
+        <div className="flex w-full justify-center items-center h-full">
+          <p>No se encontraron datos financieros.</p>
+        </div>
+      );
+    }
+
+    const arrayData = [
+      { title: "Capital", total: cuenta.capital.toFixed(2), rate: "0.5%", levelUp: true },
+      { title: "Caja Actual", total: cuenta.cajaActual.toFixed(2), rate: "0.8%", levelUp: true },
+      { title: "Ventas", total: cuenta.ventas.toFixed(2), rate: "1.2%", levelUp: true },
+      { title: "Caja Ultima Liquidada", total: cuenta.cajaUltimaLiquidacion.toFixed(2), rate: "1.2%", levelUp: true },
+    ];
 
     return (
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-4">
