@@ -1,85 +1,143 @@
 import React, { useState, useEffect } from "react";
-import { FaPlus, FaCheck, FaTimes } from "react-icons/fa";
-import DatePicker from "react-datepicker";
+import { FaPlus, FaTrash } from "react-icons/fa";
 import "react-datepicker/dist/react-datepicker.css";
 import "react-toastify/dist/ReactToastify.css";
 import { toast, ToastContainer } from "react-toastify";
-import Swal from "sweetalert2";
+import swal from "sweetalert";
+import { useNavigate } from "react-router-dom";
 import "../styles/Cuentas.css";
 import { fetchGetAllPrestamos, fetchDeletePrestamo, fetchPostPrestamo } from "../http/fetchPrestamo";
 
 const Cuentas = ({ idPrestario }) => {
   const [prestamos, setPrestamos] = useState([]);
-  const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [nrocuotas, setNrocuotas] = useState(24);
-  const [fechaInicial, setFechaInicial] = useState(new Date().toISOString());
   const [tipoCuota, setTipoCuota] = useState("Diario");
   const [interes, setInteres] = useState(20);
-  const [monto, setMonto] = useState(0);
+  const navigate = useNavigate();
 
-  useEffect(() => {
+  const cargarPrestamos = () => {
     if (idPrestario) {
       fetchGetAllPrestamos(idPrestario)
         .then((data) => setPrestamos(data))
         .catch((error) => console.error("Error fetching prestamos:", error));
     }
-  }, [idPrestario, prestamos]);
+  };
 
   useEffect(() => {
-    if (tipoCuota === "Diario") {
-      setNrocuotas(24);
-    } else if (tipoCuota === "Semanal") {
-      setNrocuotas(4);
-    }
-  }, [tipoCuota]);
+    cargarPrestamos();
+  }, [idPrestario]);
 
-  const calcularFechasPago = () => {
+  const calcularFechasPago = (fechaInicial, numcuota) => {
     let fechas = [];
-    let verificarPago = Array(nrocuotas).fill("pendiente");
+    let verificarPago = Array(Number(numcuota)).fill("pendiente");
     let fechaActual = new Date(fechaInicial);
-  
-    for (let i = 0; i < nrocuotas; i++) {
-      // Si es domingo (0), incrementa la fecha al lunes
-      if (fechaActual.getDay() === 6) {
+
+    for (let i = 0; i < numcuota; i++) {
+      if (tipoCuota === "Diario") {
         fechaActual.setDate(fechaActual.getDate() + 1);
+      } else if (tipoCuota === "Semanal") {
+        fechaActual.setDate(fechaActual.getDate() + 7);
       }
-  
       fechas.push(fechaActual.toISOString());
-  
-      // Incrementa la fecha según el tipo de cuota
-      fechaActual.setDate(
-        fechaActual.getDate() + (tipoCuota === "Diario" ? 1 : 7)
-      );
     }
-  
+
     return { fechas, verificarPago };
   };
-  
 
-  const handleGuardar = async () => {
+  const showAddPrestamoModal = () => {
+    swal({
+      title: "Insertar Préstamo",
+      content: {
+        element: "div",
+        attributes: {
+          innerHTML: `
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <label>Fecha Inicial:</label>
+              <input type="date" id="fechaInicial" style="padding: 5px; font-size: 16px;" />
+              
+              <label>Interés (%):</label>
+              <input type="number" id="interes" value="${interes}" style="padding: 5px; font-size: 16px;" />
+              
+              <label>Tipo Cuota:</label>
+              <select id="tipoCuota" style="padding: 5px; font-size: 16px;">
+                <option value="Diario" ${tipoCuota === "Diario" ? "selected" : ""}>Diario</option>
+                <option value="Semanal" ${tipoCuota === "Semanal" ? "selected" : ""}>Semanal</option>
+              </select>
+
+              <label>Número de Cuotas:</label>
+              <input type="number" id="nrocuotas" value="${nrocuotas}" style="padding: 5px; font-size: 16px;" />
+              
+              <label>Monto:</label>
+              <input type="number" id="monto" style="padding: 5px; font-size: 16px;" />
+            </div>
+          `,
+        },
+      },
+      buttons: ["Cancelar", "Guardar"],
+    }).then(async (confirm) => {
+      if (confirm) {
+        const fechaInicial = document.getElementById("fechaInicial").value;
+        const interes = document.getElementById("interes").value;
+        const monto = document.getElementById("monto").value;
+        const tipoCuotaSelect = document.getElementById("tipoCuota").value;
+        const nrocuotasInput = document.getElementById("nrocuotas").value;
+
+        if (!fechaInicial || !interes || !monto) {
+          swal("Error", "Por favor, completa todos los campos", "error");
+          return;
+        }
+
+        handleGuardar(fechaInicial, interes, monto, tipoCuotaSelect, nrocuotasInput);
+      }
+    });
+
+    // Actualizar `nroCuotas` dinámicamente cuando `tipoCuota` cambia
+    document.getElementById("tipoCuota").addEventListener("change", (e) => {
+      const newTipoCuota = e.target.value;
+      setTipoCuota(newTipoCuota);
+      const updatedNrocuotas = newTipoCuota === "Diario" ? 24 : 4;
+      setNrocuotas(updatedNrocuotas);
+      document.getElementById("nrocuotas").value = updatedNrocuotas;
+    });
+  };
+
+  const handleGuardar = async (fechaInicial, interes, monto, tipoCuotaSelect, nrocuotasInput) => {
     try {
-      const { fechas, verificarPago } = calcularFechasPago();
-
+      const { fechas, verificarPago } = calcularFechasPago(fechaInicial, nrocuotasInput);
       const nuevoPrestamoData = {
-        numeroCuota: nrocuotas,
-        fechaInicial: new Date(fechaInicial).toISOString(),
-        interes: interes,
-        tipoCuota: tipoCuota,
+        numeroCuota: Number(nrocuotasInput),
+        fechaInicial,
+        interes,
+        tipoCuota: tipoCuotaSelect,
         monto: parseFloat(monto),
-        valorCuota: (parseFloat(monto) + (parseFloat(interes) * parseFloat(monto)) / 100) / nrocuotas,
+        valorCuota: (parseFloat(monto) + (parseFloat(interes) * parseFloat(monto)) / 100) / Number(nrocuotasInput),
         deudaActual: parseFloat(monto) + (parseFloat(interes) * parseFloat(monto)) / 100,
         PrestarioIdPrestario: idPrestario,
-        UsuarioIdUsuario: "0f48179d-9904-46a3-aa4f-7f5095e04fb1",
+        UsuarioIdUsuario: "1f48179d-9904-46a3-aa4f-7f5095e04fb2",
         verificarPago,
         fechas,
       };
       await fetchPostPrestamo(nuevoPrestamoData);
       toast.success("Préstamo agregado con éxito");
-      setMostrarFormulario(false);
+      cargarPrestamos();
     } catch (error) {
       toast.error("Error al añadir el préstamo");
       console.error("Error al añadir el préstamo: ", error);
     }
+  };
+
+  const confirmDelete = (idPrestamo) => {
+    swal({
+      title: "¿Estás seguro?",
+      text: "Esta acción eliminará el préstamo de forma permanente",
+      icon: "warning",
+      buttons: ["Cancelar", "Sí, eliminar"],
+      dangerMode: true
+    }).then((willDelete) => {
+      if (willDelete) {
+        handleDelete(idPrestamo);
+      }
+    });
   };
 
   const handleDelete = async (idPrestamo) => {
@@ -93,23 +151,6 @@ const Cuentas = ({ idPrestario }) => {
     }
   };
 
-  const confirmDelete = (idPrestamo) => {
-    Swal.fire({
-      title: "¿Estás seguro?",
-      text: "Esta acción eliminará el préstamo de forma permanente",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Sí, eliminar",
-      cancelButtonText: "Cancelar",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        handleDelete(idPrestamo);
-      }
-    });
-  };
-
   return (
     <div className="table-content">
       <ToastContainer />
@@ -121,82 +162,62 @@ const Cuentas = ({ idPrestario }) => {
             </div>
             <button
               type="button"
-              onClick={() => setMostrarFormulario(true)}
-              className="flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-primary-700 hover:bg-primary-800"
+              onClick={showAddPrestamoModal}
+              className="flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-primary hover:bg-secondary focus:ring-4 focus:ring-secondary dark:bg-primary dark:hover:bg-primary focus:outline-none dark:focus:ring-secondary"
             >
-              <FaPlus className="mr-2" />
+              <FaPlus className="h-3.5 w-3.5 mr-2 -ml-1" />
               Agregar Cuenta
             </button>
           </div>
         </div>
       </div>
 
-      {mostrarFormulario && (
-        <div className="modal">
-          <div className="modal-content">
-            <h2>Insertar Préstamo</h2>
-
-            <label>Fecha Inicial:</label>
-            <DatePicker
-              selected={new Date(fechaInicial)}
-              onChange={(date) => setFechaInicial(date.toISOString())}
-            />
-
-            <label>Interés:</label>
-            <input type="text" value={interes} onChange={(e) => setInteres(e.target.value)} />
-
-            <label>Tipo Cuota:</label>
-            <select value={tipoCuota} onChange={(e) => setTipoCuota(e.target.value)}>
-              <option value="Diario">Diario</option>
-              <option value="Semanal">Semanal</option>
-            </select>
-
-            <label>NroCuotas:</label>
-            <input type="text" value={nrocuotas} onChange={(e) => setNrocuotas(e.target.value)} />
-
-            <label>Monto:</label>
-            <input type="text" value={monto} onChange={(e) => setMonto(e.target.value)} />
-
-            <div className="modal-buttons">
-              <button className="modal-button save-button" onClick={handleGuardar}>
-                <FaCheck />
-                Guardar
-              </button>
-              <button className="modal-button cancel-button" onClick={() => setMostrarFormulario(false)}>
-                <FaTimes />
-                Cancelar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {!mostrarFormulario && prestamos.length > 0 && (
+      {prestamos.length > 0 ? (
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
           <table className="w-full text-sm text-left text-gray-500">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50">
               <tr>
-                <th scope="col" className="px-6 py-3">Monto</th>
-                <th scope="col" className="px-6 py-3">Tipo Cuota</th>
-                <th scope="col" className="px-6 py-3 text-right">Eliminar</th>
+                <th scope="col" className="px-6 py-3">
+                  Monto
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  Tipo Cuota
+                </th>
+                <th scope="col" className="px-6 py-3 text-right">
+                  Eliminar
+                </th>
               </tr>
             </thead>
             <tbody>
               {prestamos.map((cuenta) => (
-                <tr key={cuenta.id_prestamo} className="bg-white border-b hover:bg-gray-50">
+                <tr
+                  key={cuenta.id_prestamo}
+                  className="bg-white border-b hover:bg-gray-50 cursor-pointer"
+                  onClick={() => navigate(`/dashboard/detalle/cuenta/${cuenta.id_prestamo}`)}
+                >
                   <th scope="row" className="px-6 py-4 font-medium text-gray-900">
                     Bs. {cuenta.monto}
                   </th>
                   <td className="px-6 py-4">{cuenta.tipoCuota}</td>
-                  <td className="px-6 py-4 text-right">
-                    <button onClick={() => confirmDelete(cuenta.id_prestamo)} className="text-red-600">
-                      Eliminar
+                  <td className="px-6 py-4 text-center">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        confirmDelete(cuenta.id_prestamo);
+                      }}
+                      className="text-red-600"
+                    >
+                      <FaTrash />
                     </button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+        </div>
+      ) : (
+        <div className="text-center mt-6 text-gray-500 dark:text-gray-300">
+          No hay cuentas pendientes.
         </div>
       )}
     </div>
