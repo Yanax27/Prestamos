@@ -1,14 +1,17 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App.jsx";
-import "./index.css";
-import { DataContextProvider } from "./context/Provider.jsx";
 import { BrowserRouter } from "react-router-dom";
-import "./fonts.css";
+import { Provider } from "react-redux";
+import store from "./redux-toolkit/store/store"; // Asegúrate de que la ruta sea correcta
+import App from "./App";
+import "./index.css";
+
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <DataContextProvider>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </DataContextProvider>
+  <React.StrictMode>
+    <Provider store={store}> {/* Provee el acceso global a Redux */}
+      <BrowserRouter> {/* Configuración de rutas */}
+        <App />
+      </BrowserRouter>
+    </Provider>
+  </React.StrictMode>
 );

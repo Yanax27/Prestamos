@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChartBar,
@@ -8,15 +8,17 @@ import {
   faSignOutAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
-import { DataContext } from "../context/Provider";
+import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
+import { logoutUser } from "../redux-toolkit/actions/authAction";
 
 const NavBar = ({ isSidebarOpen }) => {
-  const { outhSession } = useContext(DataContext);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { user } = useSelector((state) => state.auth); // Extraer el usuario desde Redux
 
-  // Confirmación de cierre de sesión
-  const handleOuthSession = () => {
+  // Manejar cierre de sesión
+  const handleLogout = () => {
     swal({
       title: "¿Estás seguro?",
       text: "¿Quieres cerrar sesión?",
@@ -25,11 +27,14 @@ const NavBar = ({ isSidebarOpen }) => {
       dangerMode: true,
     }).then((willLogout) => {
       if (willLogout) {
-        outhSession();
-        navigate("/login");
+        dispatch(logoutUser()); // Despachar acción de cierre de sesión
+        navigate("/login"); // Redirigir al login
       }
     });
   };
+
+  // Verificar si un usuario tiene un rol específico
+  const hasRole = (role) => user?.roles?.includes(role);
 
   return (
     <aside
@@ -54,38 +59,50 @@ const NavBar = ({ isSidebarOpen }) => {
               <span className="ml-3">Inicio</span>
             </li>
           </Link>
-          <Link to="/dashboard/clientes">
-            <li className="flex items-center p-2 rounded-lg hover:bg-gray-200 hover:text-gray-900 group">
-              <FontAwesomeIcon
-                icon={faUserFriends}
-                className="text-gray-100 w-5 h-5 transition duration-75 group-hover:text-gray-900"
-              />
-              <span className="ml-3">Clientes</span>
-            </li>
-          </Link>
-          <Link to="/dashboard/ingresos">
-            <li className="flex items-center p-2 rounded-lg hover:bg-gray-200 hover:text-gray-900 group">
-              <FontAwesomeIcon
-                icon={faDollarSign}
-                className="text-gray-100 w-5 h-5 transition duration-75 group-hover:text-gray-900"
-              />
-              <span className="ml-3">Ingresos</span>
-            </li>
-          </Link>
-          <Link to="/dashboard/egresos">
-            <li className="flex items-center p-2 rounded-lg hover:bg-gray-200 hover:text-gray-900 group">
-              <FontAwesomeIcon
-                icon={faChartBar}
-                className="text-gray-100 w-5 h-5 transition duration-75 group-hover:text-gray-900"
-              />
-              <span className="ml-3">Egresos</span>
-            </li>
-          </Link>
+
+          {/* Mostrar Clientes solo para usuarios con rol "admin" */}
+          {(hasRole("admin") || hasRole("prestamista"))&& (
+            <Link to="/dashboard/clientes">
+              <li className="flex items-center p-2 rounded-lg hover:bg-gray-200 hover:text-gray-900 group">
+                <FontAwesomeIcon
+                  icon={faUserFriends}
+                  className="text-gray-100 w-5 h-5 transition duration-75 group-hover:text-gray-900"
+                />
+                <span className="ml-3">Clientes</span>
+              </li>
+            </Link>
+          )}
+
+          {/* Mostrar Ingresos solo para usuarios con rol "prestamista" o "admin" */}
+          {hasRole("admin") && (
+            <Link to="/dashboard/ingresos">
+              <li className="flex items-center p-2 rounded-lg hover:bg-gray-200 hover:text-gray-900 group">
+                <FontAwesomeIcon
+                  icon={faDollarSign}
+                  className="text-gray-100 w-5 h-5 transition duration-75 group-hover:text-gray-900"
+                />
+                <span className="ml-3">Ingresos</span>
+              </li>
+            </Link>
+          )}
+
+          {/* Mostrar Egresos solo para usuarios con rol "admin" */}
+          {hasRole("admin") && (
+            <Link to="/dashboard/egresos">
+              <li className="flex items-center p-2 rounded-lg hover:bg-gray-200 hover:text-gray-900 group">
+                <FontAwesomeIcon
+                  icon={faChartBar}
+                  className="text-gray-100 w-5 h-5 transition duration-75 group-hover:text-gray-900"
+                />
+                <span className="ml-3">Egresos</span>
+              </li>
+            </Link>
+          )}
         </ul>
 
         {/* Logout */}
         <button
-          onClick={handleOuthSession}
+          onClick={handleLogout}
           className="flex items-center p-2 mt-4 text-gray-100 rounded-lg hover:bg-red-600 hover:text-white group"
         >
           <FontAwesomeIcon
