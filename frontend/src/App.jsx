@@ -1,11 +1,9 @@
-import React, { useContext, useEffect, useState } from "react";
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  Navigate,
-  useLocation,
-} from "react-router-dom";
+import { useEffect, useState } from "react";
+import { BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser, logoutUser } from "./redux-toolkit/actions/authAction";
+import { fetchValidateToken } from "./http/fetchUsuario";
+import "./App.css";
 import Navbar from "./Paginas/SidebarDashboard";
 import Clientes from "./components/Clientes";
 import AddDatos from "./components/AddDatos";
@@ -14,78 +12,75 @@ import Cuentas from "./components/Cuentas";
 import ResumenFinanciero from "./Paginas/ResumenFinanciero";
 import DetalleCuenta from "./components/DetalleCuenta";
 import Login from "./Paginas/Login";
-import "./App.css";
 import Perfil from "./Paginas/Perfil";
 import IngresoEgreso from "./Paginas/IngresoEgreso";
-import { Toaster } from "react-hot-toast";
-import { DataContext } from "./context/Provider";
-import config from "./config";  
 import { Dashboard } from "./layouts/Dashboard";
 import { TableIngresos } from "./components/TableIngresos";
 import { TableEgresos } from "./components/TableEgresos";
 import NotFound from "./Paginas/NotFound";
+import { Toaster } from "react-hot-toast";
+import ProtectedRoute from "./utils/protectedRoute";
 
 function App() {
-  const {
-    authUser,
-    setDataAuth,
-    setIsLoggedIn,
-    isLoggedIn,
-    validToken,
-    setValidToken,
-  } = useContext(DataContext);
-  const location = useLocation();
-  //const [navVisible, setNavVisible] = useState(false); // Agrega estado para controlar la visibilidad del navbar
-  const [navVisible, showNavbar] = useState(false);
-  const hideNavbar = () => {
-    showNavbar(false);
-  };
-  const handleLogin = () => {
-    setIsLoggedIn(true);
-  };
+  const { isAuthenticated } = useSelector((state) => state.auth); // Estado de autenticación
+  const dispatch = useDispatch();
+  const [tokenValidated, setTokenValidated] = useState(false);
 
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-  };
-  const ValidateRedir = ({ auth, validate, redirecTo, children }) => {
-    //RUTAS REDIRECT
-    if (auth && validate) {
-      return <Navigate to={redirecTo}></Navigate>;
-    }
-    if (!auth) return children;
-  };
+  // Validar token al cargar la aplicación
+  useEffect(() => {
+    const validateToken = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.warn("No hay token presente, el usuario no está autenticado");
+          dispatch(logoutUser());
+          setTokenValidated(true);
+          return;
+        }
+  
+        const response = await fetchValidateToken(); // Valida el token con el backend
+        if (response.success) {
+          dispatch(
+            loginUser({
+              user: response.user,
+              token,
+            })
+          );
+        } else {
+          console.warn("El token presente no es válido");
+          dispatch(logoutUser());
+        }
+      } catch (error) {
+        console.error("Error al validar token:", error.message || error);
+        dispatch(logoutUser());
+      } finally {
+        setTokenValidated(true);
+      }
+    };
+  
+    validateToken();
+  }, [dispatch]);
+  
+  
+  if (!tokenValidated) {
+    return <div>Cargando...</div>; // Muestra un spinner o mensaje de carga mientras valida el token
+  }
+  
 
-  const ProtectedRoute = ({ auth, validate, children }) => {
-    if (auth && validate) {
-      return children;
-    }
-    return <Navigate to="/" />;
-   /* const response = localStorage.getItem(config.localStorage);
-    if (!response) return <Navigate to={"/"}></Navigate>;*/
-  };
-
-  const isDashboardRoute = location.pathname === "/dashboard";
   return (
     <>
-      {/* {isDashboardRoute ? <Navbar></Navbar> : null} */}
+      <Toaster />
       <Routes>
         <Route
           path="/"
           element={
-            <ValidateRedir
-              //auth={authUser.user}
-              auth={isLoggedIn}
-              validate={validToken}
-              redirecTo="/dashboard"
-            >
-              <Login />
-            </ValidateRedir>
+            isAuthenticated ? <Navigate to="/dashboard" /> : <Login />
           }
         />
         <Route
           path="/dashboard"
           element={
-            <ProtectedRoute auth={isLoggedIn} validate={validToken}>
+            <ProtectedRoute>
               <Dashboard />
             </ProtectedRoute>
           }
@@ -94,13 +89,12 @@ function App() {
           <Route path="egresos" element={<TableEgresos />} />
           <Route path="clientes" element={<Clientes />} />
           <Route path="agregar/cliente/:clienteId" element={<AddDatos />} />
-          <Route path="detalle/cliente/:clienteId" element={<DetalleCliente />}/>
+          <Route path="detalle/cliente/:clienteId" element={<DetalleCliente />} />
           <Route path="detalle/cuenta/:cuentaId" element={<DetalleCuenta />} />
           <Route path="perfil" element={<Perfil />} />
-          <Route path="cuentas" element={<Cuentas />} /> 
+          <Route path="cuentas" element={<Cuentas />} />
         </Route>
         <Route path="*" element={<NotFound />} />
-        <Route path="/login" element={<Login />}></Route>
       </Routes>
     </>
   );
