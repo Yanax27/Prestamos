@@ -3,26 +3,47 @@ const { Sequelize } = require("sequelize");
 const fs = require("fs");
 const path = require("path");
 
+// Extraer variables de entorno
 const { DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME } = process.env;
 
-// Construir la conexión con variables separadas
-const sequelize = new Sequelize(
-  `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`,
-  {
-    logging: false, // Deshabilita logs de SQL en consola
-    native: false, // Usa pg-native si está disponible
-    dialectOptions: {
-      ssl: {
-        require: true, // Habilita SSL
-        rejectUnauthorized: false, // Permite certificados auto-firmados (necesario para Railway)
+// Verificar que todas las variables estén definidas
+if (!DB_USER || !DB_PASSWORD || !DB_HOST || !DB_PORT || !DB_NAME) {
+  console.error("❌ Error: Faltan variables de entorno necesarias para la conexión a la base de datos.");
+  console.error({
+    DB_USER,
+    DB_PASSWORD: DB_PASSWORD ? "****" : undefined, // Ocultar la contraseña en los logs
+    DB_HOST,
+    DB_PORT,
+    DB_NAME,
+  });
+  process.exit(1);
+}
+
+// Configurar la conexión a la base de datos
+let sequelize;
+try {
+  sequelize = new Sequelize(
+    `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`,
+    {
+      logging: false, // Deshabilitar logs de SQL en consola
+      native: false, // Usar pg-native si está disponible
+      dialectOptions: {
+        ssl: {
+          require: false, // Cambiar a `true` si el servidor requiere SSL
+          rejectUnauthorized: false, // Permitir certificados auto-firmados
+        },
       },
-    },
-  }
-);
+    }
+  );
 
-// El resto de tu archivo `db.js` permanece igual
+  console.log("✅ Conexión a la base de datos configurada correctamente.");
+} catch (error) {
+  console.error("❌ Error al configurar la conexión a la base de datos:", error);
+  process.exit(1);
+}
+
+// Cargar modelos dinámicamente
 const basename = path.basename(__filename);
-
 const modelDefiners = [];
 
 fs.readdirSync(path.join(__dirname, "/models"))
@@ -36,6 +57,7 @@ fs.readdirSync(path.join(__dirname, "/models"))
 
 modelDefiners.forEach((model) => model(sequelize));
 
+// Normalizar nombres de modelos
 let entries = Object.entries(sequelize.models);
 let capsEntries = entries.map((entry) => [
   entry[0][0].toUpperCase() + entry[0].slice(1),
@@ -43,6 +65,7 @@ let capsEntries = entries.map((entry) => [
 ]);
 sequelize.models = Object.fromEntries(capsEntries);
 
+// Relacionar modelos
 const {
   Abono,
   Cuenta,
@@ -77,6 +100,6 @@ Prestario.hasMany(Prestamo);
 Prestamo.belongsTo(Prestario);
 
 module.exports = {
-  ...sequelize.models,
-  conn: sequelize,
+  ...sequelize.models, // Exportar modelos
+  conn: sequelize, // Exportar conexión
 };
