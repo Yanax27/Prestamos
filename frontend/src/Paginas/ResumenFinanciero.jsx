@@ -18,14 +18,12 @@ const ResumenFinanciero = () => {
   const email = useSelector((state) => state.auth.user?.email); // Obtener email del usuario autenticado
   
   useEffect(() => {
-    console.log("veces")
     if (email) {
       dispatch(fetchAllUsuarios(email));
     }
   }, [dispatch]);
 
   useEffect(() => {
-    console.log("veces123")
     if (usuarios?.length > 0 && usuarios[0].CuentumIdCuenta) {
       dispatch(fetchCuentaById(usuarios[0].CuentumIdCuenta));
     }

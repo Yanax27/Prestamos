@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser, logoutUser } from "./redux-toolkit/actions/authAction";
 import { fetchValidateToken } from "./http/fetchUsuario";
@@ -13,7 +13,6 @@ import ResumenFinanciero from "./Paginas/ResumenFinanciero";
 import DetalleCuenta from "./components/DetalleCuenta";
 import Login from "./Paginas/Login";
 import Perfil from "./Paginas/Perfil";
-import IngresoEgreso from "./Paginas/IngresoEgreso";
 import { Dashboard } from "./layouts/Dashboard";
 import { TableIngresos } from "./components/TableIngresos";
 import { TableEgresos } from "./components/TableEgresos";
@@ -22,7 +21,7 @@ import { Toaster } from "react-hot-toast";
 import ProtectedRoute from "./utils/protectedRoute";
 
 function App() {
-  const { isAuthenticated } = useSelector((state) => state.auth); // Estado de autenticación
+  const { isAuthenticated, token } = useSelector((state) => state.auth); // Obtener token de Redux
   const dispatch = useDispatch();
   const [tokenValidated, setTokenValidated] = useState(false);
 
@@ -30,14 +29,13 @@ function App() {
   useEffect(() => {
     const validateToken = async () => {
       try {
-        const token = localStorage.getItem("token");
         if (!token) {
           console.warn("No hay token presente, el usuario no está autenticado");
           dispatch(logoutUser());
           setTokenValidated(true);
           return;
         }
-  
+
         const response = await fetchValidateToken(); // Valida el token con el backend
         if (response.success) {
           dispatch(
@@ -57,15 +55,13 @@ function App() {
         setTokenValidated(true);
       }
     };
-  
+
     validateToken();
-  }, [dispatch]);
-  
-  
+  }, [dispatch, token]);
+
   if (!tokenValidated) {
     return <div>Cargando...</div>; // Muestra un spinner o mensaje de carga mientras valida el token
   }
-  
 
   return (
     <>

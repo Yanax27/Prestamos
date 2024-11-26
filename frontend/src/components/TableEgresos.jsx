@@ -6,13 +6,14 @@ import {
   fetchPostEgreso,
 } from "../http/fetchEgreso"; // Importamos las funciones del backend
 import { fetchGetAllUsuarios } from "../http/fetchUsuario";
+import { useSelector } from "react-redux";
 
 export const TableEgresos = () => {
   const [egresos, setEgresos] = useState([]);
   const [loading, setLoading] = useState(false);
   const [modalForm, setModalForm] = useState(false);
   const [button, setButton] = useState(false);
-  const [email, setEmail] = useState(localStorage.getItem('userEmail') || '' );
+  const email = useSelector((state) => state.auth.user?.email); // Obtener email del usuario autenticado
   const [cuentaId, setCuentaId] = useState('');
 
   const {
@@ -39,7 +40,7 @@ export const TableEgresos = () => {
     cargarEgresos();
   }, [cuentaId]);
 
-  const handleAgregarEgreso = async (formData) => {
+  const handleAgregarEgreso = async (formData) => { 
     setButton(true);
     try {
       const nuevoEgreso = {
