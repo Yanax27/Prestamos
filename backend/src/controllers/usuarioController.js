@@ -67,9 +67,9 @@ class UsuarioController {
 
     // Establecer el token en una cookie
     res.cookie('jwt', token, {
-      httpOnly: false,
+      httpOnly: true,
       secure: true, // Cambiar a 'true' si estás utilizando HTTPS
-      sameSite: 'lax',
+      sameSite: 'none',
       domain: 'fantastic-rejoicing-production.up.railway.app',
       path: '/',
       expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
