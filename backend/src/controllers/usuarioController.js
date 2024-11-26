@@ -88,11 +88,19 @@ class UsuarioController {
   });
 
   // Cerrar sesión
-  logout = catchedAsync(async (req, res) => {
-    res.clearCookie('jwt');
-
-    return response(res, 200, { message: 'Logout exitoso' });
+ // Cerrar sesión
+logout = catchedAsync(async (req, res) => {
+  res.clearCookie('jwt', {
+    httpOnly: true, // Debe coincidir con la configuración original
+    secure: true,   // Cambiar a true si estás en HTTPS
+    sameSite: 'none', // Debe coincidir con la configuración original
+    domain: 'fantastic-rejoicing-production.up.railway.app', // Especifica el dominio si lo configuraste en el login
+    path: '/',      // Debe coincidir con el path configurado
   });
+
+  return response(res, 200, { message: 'Logout exitoso' });
+});
+
 
   // Actualizar usuario usando ID
   updateUsuario = catchedAsync(async (req, res) => {
