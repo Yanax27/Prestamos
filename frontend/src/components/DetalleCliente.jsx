@@ -40,16 +40,16 @@ const DetalleCliente = () => {
     <div className="max-w-2xl mx-4 sm:max-w-sm md:max-w-sm lg:max-w-sm xl:max-w-sm sm:mx-auto md:mx-auto lg:mx-auto xl:mx-auto mt-16 bg-white shadow-xl rounded-lg text-gray-900">
       <ul className="py-4 mt-2 text-gray-700 flex items-center justify-around">
         <Link to="/dashboard/clientes">
-          <li className="flex flex-col items-center justify-around">
+          <li className="flex flex-col items-center justify-around hover:text-primary">
             <FaArrowLeft size={20} />
             <span>Volver</span>
           </li>
         </Link>
-        <li className="flex flex-col items-center justify-between" onClick={() => setMostrarCliente(true)}>
+        <li className="flex flex-col items-center justify-between hover:text-primary" onClick={() => setMostrarCliente(true)}>
           <FaUser size={20} />
           <span>Cliente</span>
         </li>
-        <li className="flex flex-col items-center justify-around" onClick={() => setMostrarCliente(false)}>
+        <li className="flex flex-col items-center justify-around hover:text-primary" onClick={() => setMostrarCliente(false)}>
           <FaMoneyBillAlt size={20} />
           <span>Cuenta</span>
         </li>
