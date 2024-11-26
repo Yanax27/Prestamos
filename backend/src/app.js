@@ -21,7 +21,7 @@ server.use(cookieParser());
 // Aplicar middleware CORS antes de definir las rutas
 server.use(
   cors({
-    origin: "http://localhost:5173", // reemplaza esto con el origen de tu frontend
+    origin: "https://lustrous-yeot-409182.netlify.app/", // reemplaza esto con el origen de tu frontend
     credentials: true,
   })
 );
@@ -31,7 +31,7 @@ server.options("*", cors());
 
 // Aplicar encabezados CORS manualmente
 server.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:5173");
+  res.header("Access-Control-Allow-Origin", "https://lustrous-yeot-409182.netlify.app/");
   res.header("Access-Control-Allow-Credentials", "true");
   res.header(
     "Access-Control-Allow-Headers",
