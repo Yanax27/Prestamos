@@ -68,9 +68,9 @@ class UsuarioController {
     // Establecer el token en una cookie
     res.cookie('jwt', token, {
       httpOnly: true,
-      secure: false, // Cambiar a 'true' si estás utilizando HTTPS
-      sameSite: 'lax',
-      domain: 'localhost',
+      secure: true, // Cambiar a 'true' si estás utilizando HTTPS
+      sameSite: 'none',
+      domain: 'fantastic-rejoicing-production.up.railway.app',
       path: '/',
       expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
     });
@@ -88,11 +88,19 @@ class UsuarioController {
   });
 
   // Cerrar sesión
-  logout = catchedAsync(async (req, res) => {
-    res.clearCookie('jwt');
-
-    return response(res, 200, { message: 'Logout exitoso' });
+ // Cerrar sesión
+logout = catchedAsync(async (req, res) => {
+  res.clearCookie('jwt', {
+    httpOnly: true, // Debe coincidir con la configuración original
+    secure: true,   // Cambiar a true si estás en HTTPS
+    sameSite: 'none', // Debe coincidir con la configuración original
+    domain: 'fantastic-rejoicing-production.up.railway.app', // Especifica el dominio si lo configuraste en el login
+    path: '/',      // Debe coincidir con el path configurado
   });
+
+  return response(res, 200, { message: 'Logout exitoso' });
+});
+
 
   // Actualizar usuario usando ID
   updateUsuario = catchedAsync(async (req, res) => {

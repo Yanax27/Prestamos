@@ -13,7 +13,7 @@ export default  {
     "bg-[#]",
     "bg-[#]",
   ],
-  apiUrl:"localhost:3001/api",
-  typeRequest:"http"
+  apiUrl:"fantastic-rejoicing-production.up.railway.app/api",
+  typeRequest:"https"
 };
  

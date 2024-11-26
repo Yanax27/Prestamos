@@ -6,13 +6,14 @@ import {
   fetchPostIngreso,
 } from "../http/fetchIngreso"; // Importamos las funciones del backend
 import { fetchGetAllUsuarios } from "../http/fetchUsuario";
+import { useSelector } from "react-redux";
 
 export const TableIngresos = () => {
   const [ingresos, setIngresos] = useState([]);
   const [loading, setLoading] = useState(false);
   const [modalForm, setModalForm] = useState(false);
   const [button, setButton] = useState(false);
-  const [email, setEmail] = useState(localStorage.getItem('userEmail') || '' );
+  const  email = useSelector((state) => state.auth.user?.email); // Obtener email del usuario autenticado
   const [cuentaId, setCuentaId] = useState('');
 
   const {

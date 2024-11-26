@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { auth } from '../data/FIreBase';
-import { signOut } from 'firebase/auth';
+//import { auth } from '../data/FIreBase';
+//import { signOut } from 'firebase/auth';
 import {
     FaUser
 } from 'react-icons/fa'
@@ -9,7 +9,7 @@ import '../styles/Perfil.css';
 const Perfil = ({ onCerrarSesion }) => {
   const [userEmail, setUserEmail] = useState('');
 
-  useEffect(() => {
+  /*useEffect(() => {
     const usuarioActual = auth.currentUser;
     
     if (usuarioActual) {
@@ -24,7 +24,7 @@ const Perfil = ({ onCerrarSesion }) => {
     } catch (error) {
       console.error('Error al cerrar sesión', error);
     }
-  };
+  };*/
 
   return (
     <div className="container">
