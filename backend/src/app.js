@@ -8,7 +8,7 @@ const router = require("./routes/index.js");
 const server = express();
 
 const allowedOrigins = [
-  "https://nimble-kheer-406dc7.netlify.app", // Tu dominio de producción
+  "https://idyllic-gingersnap-c7ca82.netlify.app/", // Tu dominio de producción
   "http://localhost:5173",                  // Tu dominio en desarrollo
 ];
 
